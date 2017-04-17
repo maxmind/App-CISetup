@@ -33,7 +33,7 @@ sub update_file ($self) {
         $err = "YAML parsing error: $_\n";
     };
 
-    next unless $content || $err;
+    return unless $content || $err;
 
     if ($err) {
         print "\n\n\n", $file, "\n";
