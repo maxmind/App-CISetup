@@ -4,4 +4,4 @@ use strict;
 use warnings;
 
 use App::CISetup::AppVeyor::ConfigUpdater;
-App::CISetup::ConfigUpdater->new_with_options->run;
+App::CISetup::AppVeyor::ConfigUpdater->new_with_options->run;
