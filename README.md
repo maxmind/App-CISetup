@@ -1,27 +1,28 @@
 # NAME
 
-App::CISetup - opinionated setup for various CI systems
+App::CISetup - Command line tools to generate and update Travis and AppVeyor configs for Perl libraries
 
-# DESCRIPTION
+# VERSION
 
-This is currently a pre-release version of some internal MaxMind code that we
-use to configure github repos to run on various CI systems.
+version 0.01
 
-At this point it's really for informational purposes only (though it all works.)
-It does things that aren't really suitable for public reuse including needing
-a very recent version of perl, and enabling experimental Perl features.  YMMV.
+# SUPPORT
 
-# AUTHOR
+Bugs may be submitted through [https://github.com/maxmind/App-CISetup/issues](https://github.com/maxmind/App-CISetup/issues).
 
-Dave Rolsky <drolsky@maxmind.com> (original code)
+# AUTHORS
 
-# CONTRIBUTORS
+- Mark Fowler <mark@twoshortplanks.com>
+- Dave Rolsky <autarch@urth.org>
 
-- Mark Fowler <mfowler@maxmind.com>
+# CONTRIBUTOR
+
+Mark Fowler <mfowler@maxmind.com>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2017 by MaxMind, Inc..
+This software is Copyright (c) 2017 by MaxMind, Inc.
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+This is free software, licensed under:
+
+    The Artistic License 2.0 (GPL Compatible)
