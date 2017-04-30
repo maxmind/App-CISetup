@@ -22,12 +22,6 @@ has email_address => (
     predicate => 'has_email_address',
 );
 
-has file => (
-    is       => 'ro',
-    isa      => File,
-    required => 1,
-);
-
 has force_threaded_perls => (
     is  => 'ro',
     isa => Bool,
