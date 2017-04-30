@@ -7,13 +7,7 @@ use autodie qw( :all );
 
 our $VERSION = '0.01';
 
-use File::pushd;
-use IPC::Run3 qw( run3 );
-use List::AllUtils qw( first_index uniq );
-use App::CISetup::Types qw( Bool PathClassFile Str );
-use Path::Class::Rule;
-use Try::Tiny;
-use YAML qw( Dump LoadFile );
+use App::CISetup::Types qw( Str );
 
 use Moose;
 

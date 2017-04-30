@@ -10,8 +10,7 @@ our $VERSION = '0.01';
 use File::pushd;
 use IPC::Run3 qw( run3 );
 use List::AllUtils qw( first_index uniq );
-use App::CISetup::Types qw( Bool PathClassFile Str );
-use Path::Class::Rule;
+use App::CISetup::Types qw( Bool File Str );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
@@ -25,7 +24,7 @@ has email_address => (
 
 has file => (
     is       => 'ro',
-    isa      => PathClassFile,
+    isa      => File,
     required => 1,
 );
 
@@ -144,8 +143,8 @@ sub _rewrite_perl_block {
     }
 
     my $has_xs
-        = Path::Class::Rule->new->file->name(qr/\.xs/)
-        ->all( $self->file->parent );
+        = defined Path::Iterator::Rule->new->file->name(qr/\.xs/)
+        ->iter( $self->file->parent )->();
 
     if ( $self->force_threaded_perls || $has_xs ) {
         $travis->{perl} = [ map { ( $_, $_ . '-thr' ) } @perls ];
@@ -241,7 +240,7 @@ sub _update_notifications {
                 [
                     'travis', 'encrypt', '--no-interactive',
                     '-R',
-                    $self->github_user . '/' . $self->file->dir->basename,
+                    $self->github_user . '/' . $self->file->parent->basename,
                     $self->slack_key
                 ],
                 \undef,

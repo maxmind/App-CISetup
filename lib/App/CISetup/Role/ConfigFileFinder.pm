@@ -10,14 +10,15 @@ our $VERSION = '0.01';
 use File::pushd qw( pushd );
 use Git::Sub qw( remote );
 use App::CISetup::Travis::ConfigFile;
-use App::CISetup::Types qw( CodeRef PathClassDir Str );
-use Path::Class::Rule;
+use App::CISetup::Types qw( CodeRef Dir Str );
+use Path::Iterator::Rule;
+use Path::Tiny qw( path );
 
 use MooseX::Role::Parameterized;
 
 has dir => (
     is       => 'ro',
-    isa      => PathClassDir,
+    isa      => Dir,
     required => 1,
     coerce   => 1,
 );
@@ -45,17 +46,20 @@ role {
 sub _build_config_file_iterator {
     my $self = shift;
 
-    my $rule = Path::Class::Rule->new;
+    my $rule = Path::Iterator::Rule->new;
     $rule->file->name( $self->_filename );
     $rule->and(
         sub {
-            my $path = shift;
+            my $path = path(shift);
 
-            return unless -e $path->parent->subdir('.git');
+            return unless -e $path->parent->child('.git');
             my $pushed = pushd( $path->parent );
             ## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
             my @origin = git::remote(qw( show -n origin ));
-            return unless grep {m{Push +URL: .+(:|/)maxmind/}} @origin;
+
+            # XXX - make this configurable?
+            #            return unless grep {m{Push +URL: .+(:|/)maxmind/}} @origin;
+
             return 1;
         }
     );

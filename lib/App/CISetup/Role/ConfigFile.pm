@@ -7,11 +7,7 @@ use autodie qw( :all );
 
 our $VERSION = '0.01';
 
-use File::pushd;
-use IPC::Run3 qw( run3 );
-use List::AllUtils qw( first_index uniq );
-use App::CISetup::Types qw( Bool PathClassFile );
-use Path::Class::Rule;
+use App::CISetup::Types qw( File );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
@@ -24,7 +20,8 @@ requires qw(
 
 has file => (
     is       => 'ro',
-    isa      => PathClassFile,
+    isa      => File,
+    coerce   => 1,
     required => 1,
 );
 
