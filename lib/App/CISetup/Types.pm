@@ -2,6 +2,7 @@ package App::CISetup::Types;
 
 use strict;
 use warnings;
+use namespace::autoclean;
 
 our $VERSION = '0.01';
 

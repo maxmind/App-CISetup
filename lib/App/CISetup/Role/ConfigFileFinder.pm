@@ -54,10 +54,10 @@ sub _build_config_file_iterator {
 
             return unless -e $path->parent->child('.git');
             my $pushed = pushd( $path->parent );
-            ## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
-            my @origin = git::remote(qw( show -n origin ));
 
+## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
             # XXX - make this configurable?
+            # my @origin = git::remote(qw( show -n origin ));
             #            return unless grep {m{Push +URL: .+(:|/)maxmind/}} @origin;
 
             return 1;
