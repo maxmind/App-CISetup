@@ -1,6 +1,11 @@
 package App::CISetup::Role::ConfigFile;
 
-use App::CISetup::Wrapper::OurMoose::Role;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
+
+our $VERSION = '0.01';
 
 use File::pushd;
 use IPC::Run3 qw( run3 );
@@ -9,6 +14,8 @@ use App::CISetup::Types qw( Bool PathClassFile );
 use Path::Class::Rule;
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
+
+use Moose::Role;
 
 requires qw(
     _update_config
@@ -21,7 +28,9 @@ has file => (
     required => 1,
 );
 
-sub update_file ($self) {
+sub update_file {
+    my $self = shift;
+
     my $file = $self->file;
     my $orig = $file->slurp;
 
@@ -36,8 +45,8 @@ sub update_file ($self) {
     return unless $content || $err;
 
     if ($err) {
-        print "\n\n\n", $file, "\n";
-        print $err;
+        print "\n\n\n" . $file . "\n" or die $!;
+        print $err or die $!;
         return;
     }
 
@@ -56,14 +65,19 @@ sub update_file ($self) {
 
     return if $yaml eq $orig;
 
-    say "Updated $file";
+    print "Updated $file\n" or die $!;
 
     $file->spew($yaml);
 
     return;
 }
 
-sub _reorder_yaml_blocks ( $self, $yaml, $blocks_order ) {
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _reorder_yaml_blocks {
+    my $self         = shift;
+    my $yaml         = shift;
+    my $blocks_order = shift;
+
     my $re = qr/^
                 (
                     ([a-z_]+): # key:
@@ -95,5 +109,6 @@ sub _reorder_yaml_blocks ( $self, $yaml, $blocks_order ) {
 
     return "---\n" . join q{}, map { $blocks{$_} // () } $blocks_order->@*;
 }
+## use critic
 
 1;

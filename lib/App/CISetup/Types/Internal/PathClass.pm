@@ -2,7 +2,10 @@ package App::CISetup::Types::Internal::PathClass;
 
 # ABSTRACT: Exports PathClassDir and PathClassFile
 
-use App::CISetup::Wrapper::Ourperl;
+use strict;
+use warnings;
+
+our $VERSION = '0.01';
 
 use MooseX::Getopt::OptionTypeMap ();
 use MooseX::Types::Moose qw( ArrayRef Str );

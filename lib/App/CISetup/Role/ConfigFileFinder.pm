@@ -1,6 +1,11 @@
 package App::CISetup::Role::ConfigFileFinder;
 
-use App::CISetup::Wrapper::OurMooseX::Role::Parameterized;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
+
+our $VERSION = '0.01';
 
 use File::pushd qw( pushd );
 use Git::Sub qw( remote );
@@ -8,7 +13,7 @@ use App::CISetup::Travis::ConfigFile;
 use App::CISetup::Types qw( CodeRef PathClassDir Str );
 use Path::Class::Rule;
 
-with 'MooseX::Getopt::Dashes';
+use MooseX::Role::Parameterized;
 
 has dir => (
     is       => 'ro',
@@ -24,6 +29,8 @@ has _config_file_iterator => (
     builder => '_build_config_file_iterator',
 );
 
+with 'MooseX::Getopt::Dashes';
+
 parameter filename => (
     is       => 'ro',
     isa      => Str,
@@ -35,16 +42,20 @@ role {
     method( _filename => sub { $p->filename } );
 };
 
-sub _build_config_file_iterator ($self) {
+sub _build_config_file_iterator {
+    my $self = shift;
+
     my $rule = Path::Class::Rule->new;
     $rule->file->name( $self->_filename );
     $rule->and(
-        sub ( $path, $, $ ) {
+        sub {
+            my $path = shift;
+
             return unless -e $path->parent->subdir('.git');
             my $pushed = pushd( $path->parent );
             ## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
             my @origin = git::remote(qw( show -n origin ));
-            return unless grep { m{Push +URL: .+(:|/)maxmind/} } @origin;
+            return unless grep {m{Push +URL: .+(:|/)maxmind/}} @origin;
             return 1;
         }
     );

@@ -1,38 +1,51 @@
 package App::CISetup::AppVeyor::ConfigFile;
 
-use MM::Moose;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
+
+our $VERSION = '0.01';
 
 use File::pushd;
 use IPC::Run3 qw( run3 );
 use List::AllUtils qw( first_index uniq );
-use MM::Types qw( Bool PathClassFile Str );
+use App::CISetup::Types qw( Bool PathClassFile Str );
 use Path::Class::Rule;
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
+use Moose;
+
 has email_address => (
     is        => 'ro',
-    isa       => Str,  # todo, better type
+    isa       => Str,                   # todo, better type
     predicate => 'has_email_address',
 );
 
 has encrypted_slack_key => (
-    is      => 'ro',
-    isa     => Str,
+    is        => 'ro',
+    isa       => Str,
     predicate => 'has_encrypted_slack_key',
 );
 
 with 'App::CISetup::Role::ConfigFile';
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
-sub _update_config ( $self, $appveyor ) {
+sub _update_config {
+    my $self     = shift;
+    my $appveyor = shift;
+
     $self->_update_notifications($appveyor);
 
     return;
 }
 ## use critic
 
-sub _update_notifications ( $self, $appveyor ) {
+sub _update_notifications {
+    my $self     = shift;
+    my $appveyor = shift;
+
     my @notifications;
     $appveyor->{notifications} = \@notifications;
 
@@ -71,7 +84,10 @@ my @BlocksOrder = qw(
 );
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
-sub _fix_up_yaml ( $self, $yaml ) {
+sub _fix_up_yaml {
+    my $self = shift;
+    my $yaml = shift;
+
     return $self->_reorder_yaml_blocks( $yaml, \@BlocksOrder );
 }
 ## use critic

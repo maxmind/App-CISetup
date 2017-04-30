@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 
-use App::CISetup::Wrapper::Ourperl;
+use strict;
+use warnings;
 
 use App::CISetup::Travis::ConfigUpdater;
-App::CISetup::Travis::ConfigUpdater->new_with_options->run;
+
+exit App::CISetup::Travis::ConfigUpdater->new_with_options->run;
 
 __END__
 

@@ -1,6 +1,11 @@
 package App::CISetup::Travis::ConfigFile;
 
-use App::CISetup::Wrapper::OurMoose;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
+
+our $VERSION = '0.01';
 
 use File::pushd;
 use IPC::Run3 qw( run3 );
@@ -10,9 +15,11 @@ use Path::Class::Rule;
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
+use Moose;
+
 has email_address => (
     is        => 'ro',
-    isa       => Str,  # todo, better type
+    isa       => Str,                   # todo, better type
     predicate => 'has_email_address',
 );
 
@@ -23,8 +30,8 @@ has file => (
 );
 
 has force_threaded_perls => (
-    is      => 'ro',
-    isa     => Bool,
+    is  => 'ro',
+    isa => Bool,
 );
 
 has github_user => (
@@ -34,16 +41,18 @@ has github_user => (
 );
 
 has slack_key => (
-    is      => 'ro',
-    isa     => Str,
+    is        => 'ro',
+    isa       => Str,
     predicate => 'has_slack_key',
 );
-
 
 with 'App::CISetup::Role::ConfigFile';
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
-sub _update_config ( $self, $travis ) {
+sub _update_config {
+    my $self   = shift;
+    my $travis = shift;
+
     $self->_maybe_update_travis_perl_usage($travis);
     $self->_maybe_disable_sudo($travis);
     $self->_update_coverity_email($travis);
@@ -53,10 +62,13 @@ sub _update_config ( $self, $travis ) {
 }
 ## use critic
 
-sub _maybe_update_travis_perl_usage ( $self, $travis ) {
+sub _maybe_update_travis_perl_usage {
+    my $self   = shift;
+    my $travis = shift;
+
     return
         unless $travis->{before_install}
-        && grep { /perl-travis-helper|travis-perl/ }
+        && grep {/perl-travis-helper|travis-perl/}
         $travis->{before_install}->@*;
 
     $self->_fixup_helpers_usage($travis);
@@ -66,7 +78,10 @@ sub _maybe_update_travis_perl_usage ( $self, $travis ) {
     return;
 }
 
-sub _fixup_helpers_usage ( $self, $travis ) {
+sub _fixup_helpers_usage {
+    my $self   = shift;
+    my $travis = shift;
+
     if (
         ( $travis->{script} && $travis->{script}->@* > 3 )
         || (
@@ -77,7 +92,7 @@ sub _fixup_helpers_usage ( $self, $travis ) {
         ) {
 
         my $i = (
-            first_index { /travis-perl|haarg/ }
+            first_index {/travis-perl|haarg/}
             $travis->{before_install}->@*
         ) // 0;
         $travis->{before_install}->[$i]
@@ -90,7 +105,7 @@ sub _fixup_helpers_usage ( $self, $travis ) {
         delete $travis->{script};
 
         my $i = (
-            first_index { /travis-perl|haarg/ }
+            first_index {/travis-perl|haarg/}
             $travis->{before_install}->@*
         ) // 0;
         $travis->{before_install}[$i]
@@ -105,7 +120,10 @@ sub _fixup_helpers_usage ( $self, $travis ) {
 # those Perls back. Not sure how best to deal with this. We want to test on
 # all Perls for most modules, and any manually generated file might forget to
 # include some of them.
-sub _rewrite_perl_block ( $self, $travis ) {
+sub _rewrite_perl_block {
+    my $self   = shift;
+    my $travis = shift;
+
     my @perls = qw(
         blead
         dev
@@ -122,7 +140,7 @@ sub _rewrite_perl_block ( $self, $travis ) {
 
     for my $perl (qw( 5.8 5.10 5.12 )) {
         pop @perls
-            unless grep { /\Q$perl/ } $travis->{perl}->@*;
+            unless grep {/\Q$perl/} $travis->{perl}->@*;
     }
 
     my $has_xs
@@ -142,7 +160,10 @@ sub _rewrite_perl_block ( $self, $travis ) {
     return;
 }
 
-sub _update_perl_matrix ( $self, $travis ) {
+sub _update_perl_matrix {
+    my $self   = shift;
+    my $travis = shift;
+
     my @bleads = 'blead';
     push @bleads, 'blead-thr'
         if grep { $_ eq 'blead-thr' } @{ $travis->{perl} };
@@ -160,9 +181,12 @@ sub _update_perl_matrix ( $self, $travis ) {
     return;
 }
 
-sub _maybe_disable_sudo ( $self, $travis ) {
+sub _maybe_disable_sudo {
+    my $self   = shift;
+    my $travis = shift;
+
     return
-        if grep { /sudo/ }
+        if grep {/sudo/}
         map { ref $travis->{$_} ? $travis->{$_}->@* : $travis->{$_} }
         grep { exists $travis->{$_} } qw( before_install install );
 
@@ -181,15 +205,21 @@ sub _maybe_disable_sudo ( $self, $travis ) {
     return;
 }
 
-sub _update_coverity_email ( $self, $travis ) {
+sub _update_coverity_email {
+    my $self   = shift;
+    my $travis = shift;
+
     return unless $self->has_email_address;
     return unless $travis->{addons} && $travis->{addons}{coverity_scan};
     $travis->{addons}{coverity_scan}{notification_email}
         = $self->email_address;
 }
 
-sub _update_notifications ( $self, $travis ) {
-    if ($self->has_email_address) {
+sub _update_notifications {
+    my $self   = shift;
+    my $travis = shift;
+
+    if ( $self->has_email_address ) {
         $travis->{notifications}{email} = {
             recipients => [ $self->email_address ],
             on_success => 'change',
@@ -197,7 +227,7 @@ sub _update_notifications ( $self, $travis ) {
         };
     }
 
-    if ($self->has_slack_key && $self->has_github_user) {
+    if ( $self->has_slack_key && $self->has_github_user ) {
         my $slack = $travis->{notifications}{slack}{rooms}{secure};
 
         # travis encrypt will make a new encrypted version every time it's given
@@ -210,7 +240,8 @@ sub _update_notifications ( $self, $travis ) {
             run3(
                 [
                     'travis', 'encrypt', '--no-interactive',
-                    '-R', $self->github_user . '/' . $self->file->dir->basename,
+                    '-R',
+                    $self->github_user . '/' . $self->file->dir->basename,
                     $self->slack_key
                 ],
                 \undef,
@@ -225,7 +256,6 @@ sub _update_notifications ( $self, $travis ) {
             rooms => { secure => $slack },
         };
     }
-
 
     return;
 }
@@ -257,13 +287,19 @@ my @BlocksOrder = qw(
 my %KnownBlocks = map { $_ => 1 } @BlocksOrder;
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
-sub _fix_up_yaml ( $self, $yaml ) {
+sub _fix_up_yaml {
+    my $self = shift;
+    my $yaml = shift;
+
     $yaml =~ s/sudo: 0/sudo: false/g;
 
     return $self->_reorder_yaml_blocks( $yaml, \@BlocksOrder );
 }
 
-sub _reorder_addons_block ( $self, $block ) {
+sub _reorder_addons_block {
+    my $self  = shift;
+    my $block = shift;
+
     return $block unless $block =~ /coverity_scan:\n(.+)(?=\S|\z)/ms;
 
     my %chunks;
@@ -272,7 +308,7 @@ sub _reorder_addons_block ( $self, $block ) {
         $chunks{$name} = $line;
     }
 
-    my $reordered = join q{}, map { "$chunks{$_}\n" }
+    my $reordered = join q{}, map {"$chunks{$_}\n"}
         grep { $chunks{$_} }
         qw(
         project
