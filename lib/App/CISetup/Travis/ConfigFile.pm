@@ -120,8 +120,8 @@ sub _rewrite_perl_block {
     my @perls = qw(
         blead
         dev
-        5.24.0
-        5.22.1
+        5.24.1
+        5.22.3
         5.20.3
         5.18.3
         5.16.3
