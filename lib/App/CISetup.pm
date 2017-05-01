@@ -1,6 +1,6 @@
 package App::CISetup;
 
-use v5.12;
+use v5.14;
 use strict;
 use warnings;
 
