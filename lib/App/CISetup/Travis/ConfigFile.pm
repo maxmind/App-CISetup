@@ -82,7 +82,7 @@ sub _maybe_update_travis_perl_usage {
     return
         unless $travis->{before_install}
         && grep {/perl-travis-helper|travis-perl/}
-        $travis->{before_install}->@*;
+        @{ $travis->{before_install} };
 
     $self->_fixup_helpers_usage($travis);
     $self->_rewrite_perl_block($travis);
@@ -97,17 +97,17 @@ sub _fixup_helpers_usage {
     my $travis = shift;
 
     if (
-        ( $travis->{script} && $travis->{script}->@* > 3 )
+        ( @{ $travis->{script} && $travis->{script} } > 3 )
         || (
             $travis->{install}
-            && ( grep { !/cpan-install/ } $travis->{install}->@*
-                || $travis->{install}->@* > 2 )
+            && ( grep { !/cpan-install/ } @{ $travis->{install} }
+                || @{ $travis->{install} } > 2 )
         )
         ) {
 
         my $i = (
             first_index {/travis-perl|haarg/}
-            $travis->{before_install}->@*
+            @{ $travis->{before_install} }
         ) // 0;
         $travis->{before_install}->[$i]
             = 'git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers';
@@ -120,11 +120,11 @@ sub _fixup_helpers_usage {
 
         my $i = (
             first_index {/travis-perl|haarg/}
-            $travis->{before_install}->@*
+            @{ $travis->{before_install} }
         ) // 0;
         $travis->{before_install}[$i]
             = 'eval $(curl https://travis-perl.github.io/init) --auto';
-        splice( $travis->{before_install}->@*, $i + 1, 0 );
+        splice( @{ $travis->{before_install} }, $i + 1, 0 );
     }
 
     return;
@@ -154,7 +154,7 @@ sub _rewrite_perl_block {
 
     for my $perl (qw( 5.8 5.10 5.12 )) {
         pop @perls
-            unless grep {/\Q$perl/} $travis->{perl}->@*;
+            unless grep {/\Q$perl/} @{ $travis->{perl} };
     }
 
     my $has_xs
@@ -219,7 +219,7 @@ sub _maybe_disable_sudo {
 
     return
         if grep {/sudo/}
-        map { ref $travis->{$_} ? $travis->{$_}->@* : $travis->{$_} }
+        map { ref $travis->{$_} ? @{ $travis->{$_} } : $travis->{$_} }
         grep { exists $travis->{$_} } qw( before_install install );
 
     $travis->{sudo} = 0;
@@ -227,7 +227,7 @@ sub _maybe_disable_sudo {
     my @addons
         = $travis->{addons}
         && $travis->{addons}{apt} && $travis->{addons}{apt}{packages}
-        ? $travis->{addons}{apt}{packages}->@*
+        ? @{ $travis->{addons}{apt}{packages} }
         : ();
     push @addons, qw( aspell aspell-en )
         if $travis->{perl};

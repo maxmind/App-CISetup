@@ -98,13 +98,13 @@ sub _reorder_yaml_blocks {
         $blocks{$name} = $self->$method( $blocks{$name} );
     }
 
-    my %known_blocks = map { $_ => 1 } $blocks_order->@*;
+    my %known_blocks = map { $_ => 1 } @{$blocks_order};
     for my $block ( keys %blocks ) {
         die "Unknown block $block in " . $self->file
             unless $known_blocks{$block};
     }
 
-    return "---\n" . join q{}, map { $blocks{$_} // () } $blocks_order->@*;
+    return "---\n" . join q{}, map { $blocks{$_} // () } @{$blocks_order};
 }
 ## use critic
 
