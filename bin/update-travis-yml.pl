@@ -155,6 +155,13 @@ something like this:
         - env: COVERAGE=1
           perl: '5.24'
 
+
+=head2 C<env.global>
+
+This script will ensure that C<env.global> sets both C<RELEASE_TESTING=1> and
+C<AUTHOR_TESTING=1>, in addition to any other variables you have listed. It
+will also sort the entries in this block.
+
 =head2 C<notifications>
 
 If you pass an C<--email-address> or C<--slack-key> command-line argument,

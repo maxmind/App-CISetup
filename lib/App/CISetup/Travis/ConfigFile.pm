@@ -67,6 +67,7 @@ sub _maybe_update_travis_perl_usage {
     $self->_fixup_helpers_usage($travis);
     $self->_rewrite_perl_block($travis);
     $self->_update_perl_matrix($travis);
+    $self->_update_env_vars($travis);
 
     return;
 }
@@ -170,6 +171,24 @@ sub _update_perl_matrix {
         ],
         allow_failures => [ map { { perl => $_ } } @bleads ],
     };
+
+    return;
+}
+
+sub _update_env_vars {
+    my $self   = shift;
+    my $travis = shift;
+
+    $travis->{env} //= {};
+    $travis->{env}{global} = [
+        uniq(
+            sort @{ $travis->{env}{global} // [] },
+            qw(
+                RELEASE_TESTING=1
+                AUTHOR_TESTING=1
+                ),
+        )
+    ];
 
     return;
 }
