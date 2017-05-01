@@ -59,6 +59,11 @@ L<https://github.com/travis-perl/helpers> for details.
 
 Here's a step-by-step guide to the generated Travis config and what it does:
 
+=head2 C<__app_cisetup__>
+
+This saves any flags you pass on the command line. Future runs of this script
+will use these flags if nothing is passed on the command line.
+
 =head2 C<sudo> and C<addons>
 
 By default, C<sudo> will be disabled for the Travis run. This makes Travis

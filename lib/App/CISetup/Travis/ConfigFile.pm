@@ -10,6 +10,7 @@ our $VERSION = '0.01';
 use File::pushd;
 use IPC::Run3 qw( run3 );
 use List::AllUtils qw( first_index uniq );
+use List::Gather;
 use App::CISetup::Types qw( Bool File Str );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
@@ -23,8 +24,9 @@ has email_address => (
 );
 
 has force_threaded_perls => (
-    is  => 'ro',
-    isa => Bool,
+    is       => 'ro',
+    isa      => Bool,
+    required => 1,
 );
 
 has github_user => (
@@ -46,6 +48,7 @@ sub _update_config {
     my $self   = shift;
     my $travis = shift;
 
+    $self->_update_cisetup_flags($travis);
     $self->_maybe_update_travis_perl_usage($travis);
     $self->_maybe_disable_sudo($travis);
     $self->_update_coverity_email($travis);
@@ -54,6 +57,23 @@ sub _update_config {
     return;
 }
 ## use critic
+
+sub _update_cisetup_flags {
+    my $self   = shift;
+    my $travis = shift;
+
+    $travis->{'__app_cisetup__'} = {
+        force_threaded_perls => $self->force_threaded_perls,
+        gather {
+            take email_address => $self->email_address
+                if $self->has_email_address;
+            take github_user => $self->github_user
+                if $self->has_github_user;
+        }
+    };
+
+    return;
+}
 
 sub _maybe_update_travis_perl_usage {
     my $self   = shift;
@@ -273,6 +293,7 @@ sub _update_notifications {
 }
 
 my @BlocksOrder = qw(
+    __app_cisetup__
     sudo
     addons
     language
