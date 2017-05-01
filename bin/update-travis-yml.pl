@@ -15,7 +15,9 @@ __END__
 
 =head1 DESCRIPTION
 
-Update existing .travis.yml files with Slack and notification settings
+This script updates existing .travis.yml files with various settings from the
+command line. It is mostly focused on configuring Perl projects to work with
+the L<Perl Travis Helpers|https://github.com/travis-perl/helpers> tools.
 
 =head1 GETTING STARTED
 
@@ -53,9 +55,6 @@ arguments:
 The updated config is based in part of the config that's already there, so the
 tools starts by reading in the existing config. It will use this as the guide
 for some decisions about what to update, as detailed below.
-
-This config is all based on using the travis-perl helper scripts. See
-L<https://github.com/travis-perl/helpers> for details.
 
 Here's a step-by-step guide to the generated Travis config and what it does:
 
