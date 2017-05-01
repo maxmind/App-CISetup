@@ -17,7 +17,9 @@ __END__
 
 This script updates existing .travis.yml files with various settings from the
 command line. It is mostly focused on configuring Perl projects to work with
-the L<Perl Travis Helpers|https://github.com/travis-perl/helpers> tools.
+the L<Perl Travis Helpers|https://github.com/travis-perl/helpers> tools. It
+also reorders the top-level keys in the YAML file and does some other minor
+cleanups.
 
 =head1 GETTING STARTED
 
@@ -180,6 +182,13 @@ encrypted key every time it's invoked, leading to annoying churn.
 =head1 ARGUMENTS
 
 This script accepts the following command line arguments:
+
+=head2 --dir
+
+The directory under which to look for F<.travis.yml> files. This does a
+recursive search so you can update many projects at once.
+
+This is required.
 
 =head2 --force-threaded-perls
 
