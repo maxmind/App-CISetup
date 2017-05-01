@@ -126,7 +126,7 @@ Perls, then you get a block like this:
       - '5.14'
 
 If the distro has XS code or you pass the C<--force-threaded-perls>
-command-line argument, then you will get a block with every Perl from 5.14 to
+command line argument, then you will get a block with every Perl from 5.14 to
 the latest stable release, plus dev and blead, in both threaded and unthreaded
 forms. This will look something like this:
 
@@ -169,7 +169,7 @@ will also sort the entries in this block.
 
 =head2 C<notifications>
 
-If you pass an C<--email-address> or C<--slack-key> command-line argument,
+If you pass an C<--email-address> or C<--slack-key> command line argument,
 then this block will be updated. For email, notifications will be sent on all
 failures and on changes.
 
@@ -180,7 +180,7 @@ encrypted key every time it's invoked, leading to annoying churn.
 
 =head1 ARGUMENTS
 
-This script accepts the following command-line arguments:
+This script accepts the following command line arguments:
 
 =head2 --force-threaded-perls
 
