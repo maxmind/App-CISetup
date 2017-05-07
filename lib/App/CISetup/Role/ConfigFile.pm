@@ -7,23 +7,36 @@ use autodie qw( :all );
 
 our $VERSION = '0.01';
 
-use App::CISetup::Types qw( File );
+use App::CISetup::Types qw( Path );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
 use Moose::Role;
 
 requires qw(
+    _create_config
     _update_config
-    _fix_up_yaml
 );
 
 has file => (
     is       => 'ro',
-    isa      => File,
+    isa      => Path,
     coerce   => 1,
     required => 1,
 );
+
+sub create_file {
+    my $self = shift;
+
+    my $yaml = $self->_create_config;
+
+    my $file = $self->file;
+    $file->spew($yaml);
+
+    print "Created $file\n" or die $!;
+
+    return;
+}
 
 sub update_file {
     my $self = shift;
@@ -39,7 +52,7 @@ sub update_file {
         $err = "YAML parsing error: $_\n";
     };
 
-    return unless $content || $err;
+    return 0 unless $content || $err;
 
     if ($err) {
         print "\n\n\n" . $file . "\n" or die $!;
@@ -47,24 +60,12 @@ sub update_file {
         return;
     }
 
-    $self->_update_config($content);
-
-    ## no critic (TestingAndDebugging::ProhibitNoWarnings)
-    no warnings 'once';
-
-    # If Perl versions aren't quotes then Travis display 5.10 as "5.1"
-
-    ## no critic (Variables::ProhibitPackageVars)
-    local $YAML::QuoteNumericStrings = 1;
-    my $yaml = Dump($content);
-
-    $yaml = $self->_fix_up_yaml($yaml);
-
+    my $yaml = $self->_update_config($content);
     return if $yaml eq $orig;
 
-    print "Updated $file\n" or die $!;
-
     $file->spew($yaml);
+
+    print "Updated $file\n" or die $!;
 
     return;
 }

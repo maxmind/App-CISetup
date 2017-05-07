@@ -13,9 +13,16 @@ use List::AllUtils qw( first_index uniq );
 use List::Gather;
 use App::CISetup::Types qw( Bool File Str );
 use Try::Tiny;
-use YAML qw( Dump LoadFile );
+use YAML qw( Dump );
 
 use Moose;
+use MooseX::StrictConstructor;
+
+has create => (
+    is       => 'ro',
+    isa      => Bool,
+    required => 1,
+);
 
 has email_address => (
     is        => 'ro',
@@ -44,6 +51,12 @@ has slack_key => (
 with 'App::CISetup::Role::ConfigFile';
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _create_config {
+    my $self = shift;
+
+    return $self->_update_config( { language => 'perl' } );
+}
+
 sub _update_config {
     my $self   = shift;
     my $travis = shift;
@@ -54,7 +67,15 @@ sub _update_config {
     $self->_update_coverity_email($travis);
     $self->_update_notifications($travis);
 
-    return;
+    ## no critic (TestingAndDebugging::ProhibitNoWarnings, Variables::ProhibitPackageVars)
+    no warnings 'once';
+
+    # If Perl versions aren't quotes then Travis displays 5.10 as "5.1"
+    local $YAML::QuoteNumericStrings = 1;
+    my $yaml = Dump($travis);
+    $yaml = $self->_fix_up_yaml($yaml);
+
+    return $yaml;
 }
 ## use critic
 
@@ -80,9 +101,10 @@ sub _maybe_update_travis_perl_usage {
     my $travis = shift;
 
     return
-        unless $travis->{before_install}
+        unless $self->create
+        || ( $travis->{before_install}
         && grep {/perl-travis-helper|travis-perl/}
-        @{ $travis->{before_install} };
+        @{ $travis->{before_install} } );
 
     $self->_fixup_helpers_usage($travis);
     $self->_rewrite_perl_block($travis);
@@ -97,7 +119,7 @@ sub _fixup_helpers_usage {
     my $travis = shift;
 
     if (
-        ( @{ $travis->{script} && $travis->{script} } > 3 )
+        ( @{ $travis->{script} // [] } && @{ $travis->{script} } > 3 )
         || (
             $travis->{install}
             && ( grep { !/cpan-install/ } @{ $travis->{install} }
@@ -118,13 +140,15 @@ sub _fixup_helpers_usage {
         delete $travis->{install};
         delete $travis->{script};
 
-        my $i = (
-            first_index {/travis-perl|haarg/}
-            @{ $travis->{before_install} }
-        ) // 0;
+        $travis->{before_install} //= [];
+        my $i = first_index {/travis-perl|haarg/}
+        @{ $travis->{before_install} };
+        $i = 0 if $i < 0;
+
         $travis->{before_install}[$i]
             = 'eval $(curl https://travis-perl.github.io/init) --auto';
-        splice( @{ $travis->{before_install} }, $i + 1, 0 );
+        splice( @{ $travis->{before_install} }, $i + 1, 0 )
+            if @{ $travis->{before_install} } > 1;
     }
 
     return;

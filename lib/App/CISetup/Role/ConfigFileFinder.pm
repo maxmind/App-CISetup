@@ -10,11 +10,17 @@ our $VERSION = '0.01';
 use File::pushd qw( pushd );
 use Git::Sub qw( remote );
 use App::CISetup::Travis::ConfigFile;
-use App::CISetup::Types qw( CodeRef Dir Str );
+use App::CISetup::Types qw( Bool CodeRef Dir Str );
 use Path::Iterator::Rule;
 use Path::Tiny qw( path );
 
 use MooseX::Role::Parameterized;
+
+has create => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
 
 has dir => (
     is       => 'ro',
@@ -48,6 +54,7 @@ sub _build_config_file_iterator {
 
     my $rule = Path::Iterator::Rule->new;
     $rule->file->name( $self->_filename );
+
     $rule->and(
         sub {
             my $path = path(shift);
