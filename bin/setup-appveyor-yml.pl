@@ -102,7 +102,14 @@ This is required.
 =head2 --encrypted-slack-key
 
 A Slack key to use for Slack notifications. If you pass this you must also
-pass C<--github-user>.
+pass C<--slack-channel>.
+
+You can generate an encrypted key from the AppVeyor website.
+
+=head2 --slack-channel
+
+The Slack channel to notify. If you pass this you must also pass
+C<--encrypted-slack-key>.
 
 =head2 --email-address
 

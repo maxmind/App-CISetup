@@ -36,6 +36,7 @@ EOF
         App::CISetup::AppVeyor::ConfigFile->new(
             file                => $file,
             encrypted_slack_key => 'encrypted',
+            slack_channel       => 'my-channel',
             email_address       => 'drolsky@cpan.org',
         )->update_file;
 
@@ -60,7 +61,7 @@ EOF
                     {
                         provider                => 'Slack',
                         auth_token              => { secure => 'encrypted' },
-                        channel                 => 'ci',
+                        channel                 => 'my-channel',
                         on_build_failure        => 'true',
                         on_build_status_changed => 'true',
                         on_build_success        => 'true',
@@ -81,6 +82,7 @@ EOF
         App::CISetup::AppVeyor::ConfigFile->new(
             file                => $file,
             encrypted_slack_key => 'encrypted',
+            slack_channel       => 'my-channel',
             email_address       => 'drolsky@cpan.org',
         )->update_file;
 

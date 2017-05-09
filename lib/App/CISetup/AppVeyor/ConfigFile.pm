@@ -19,6 +19,12 @@ has email_address => (
     predicate => 'has_email_address',
 );
 
+has slack_channel => (
+    is        => 'ro',
+    isa       => Str,
+    predicate => 'has_slack_channel',
+);
+
 has encrypted_slack_key => (
     is        => 'ro',
     isa       => Str,
@@ -85,11 +91,11 @@ sub _update_notifications {
         auth_token => {
             secure => $self->encrypted_slack_key,
         },
-        channel                 => 'ci',
+        channel                 => $self->slack_channel,
         on_build_failure        => 'true',
         on_build_status_changed => 'true',
         on_build_success        => 'true',
-    } if $self->has_encrypted_slack_key;
+    } if $self->has_encrypted_slack_key && $self->has_slack_channel;
 
     push @notifications, {
         provider                => 'Email',
