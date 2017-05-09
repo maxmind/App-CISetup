@@ -190,6 +190,12 @@ config, regardless of whether the distro has XS or not.
 A Slack key to use for Slack notifications. If you pass this you must also
 pass C<--github-user>.
 
+You'll need to have the Travis CLI installed. On a linux box this would be
+something like
+
+    $> sudo apt-get install ruby1.9.1-dev
+    $> sudo gem install travis -v 1.8.2 --no-rdoc --no-ri
+
 =head2 --github-user
 
 Your github user name. This is required if you pass C<--slack-key>.
@@ -199,11 +205,5 @@ Your github user name. This is required if you pass C<--slack-key>.
 The email address to which notifications should be sent. This is optional, and
 if you don't provide it, then no notification emails will be configured (but
 the default Travis notifications will still be in place).
-
-You'll need to have the Travis CLI installed. On a linux box this would be
-something like
-
-    $> sudo apt-get install ruby1.9.1-dev
-    $> sudo gem install travis -v 1.8.2 --no-rdoc --no-ri
 
 =cut
