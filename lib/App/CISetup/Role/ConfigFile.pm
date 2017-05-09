@@ -42,7 +42,6 @@ sub update_file {
     my $file = $self->file;
     my $orig = $file->slurp;
 
-    my $err;
     my $content = try {
         LoadFile($file);
     }

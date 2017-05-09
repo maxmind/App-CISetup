@@ -136,7 +136,7 @@ subtest(
         my $file = $dir->child('.travis.yml');
 
         App::CISetup::Travis::ConfigFile->new(
-            file => $file,
+            file                 => $file,
             force_threaded_perls => 0,
         )->create_file;
 
@@ -322,6 +322,7 @@ subtest(
 
         my @run3;
         no warnings 'redefine';
+        ## no critic (Variables::ProtectPrivateVars)
         local *App::CISetup::Travis::ConfigFile::_run3 = sub {
             shift;
             push @run3, @_;

@@ -26,9 +26,9 @@ has encrypted_slack_key => (
 
 with 'App::CISetup::Role::ConfigFile';
 
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 sub _create_config { }
 
-## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 sub _update_config {
     my $self     = shift;
     my $appveyor = shift;

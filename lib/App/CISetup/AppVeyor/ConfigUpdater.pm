@@ -85,7 +85,7 @@ sub _cf_params {
     my $file = shift;
 
     return (
-        file   => $file,
+        file => $file,
         (
             $self->has_email_address
             ? ( email_address => $self->email_address )
