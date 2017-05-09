@@ -8,6 +8,7 @@ use autodie qw( :all );
 our $VERSION = '0.01';
 
 use App::CISetup::Types qw( Str );
+use YAML qw( Dump );
 
 use Moose;
 
@@ -25,6 +26,8 @@ has encrypted_slack_key => (
 
 with 'App::CISetup::Role::ConfigFile';
 
+sub _create_config { }
+
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 sub _update_config {
     my $self     = shift;
@@ -32,7 +35,10 @@ sub _update_config {
 
     $self->_update_notifications($appveyor);
 
-    return;
+    my $yaml = Dump($appveyor);
+    $yaml = $self->_fix_up_yaml($yaml);
+
+    return $yaml;
 }
 ## use critic
 
@@ -69,12 +75,14 @@ sub _update_notifications {
 my @BlocksOrder = qw(
     version
     os
+    cache
     before_build
     install
     build
     build_script
     test_script
     notifications
+    skip_tags
 );
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
