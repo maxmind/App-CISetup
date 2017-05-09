@@ -41,7 +41,7 @@ arguments:
 =head1 THE CONFIG
 
 If there is an existing file, most of its config will be preserved. The
-exisitng config is used as the guide for some decisions about what to update,
+existing config is used as the guide for some decisions about what to update,
 as detailed below. A newly created file will also follow this guide.
 
 Here's a step-by-step guide to the generated Travis config and what it does:
