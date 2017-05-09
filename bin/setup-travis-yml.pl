@@ -15,34 +15,20 @@ __END__
 
 =head1 DESCRIPTION
 
-This script updates existing .travis.yml files with various settings from the
-command line. It is mostly focused on configuring Perl projects to work with
-the L<Perl Travis Helpers|https://github.com/travis-perl/helpers> tools. It
-also reorders the top-level keys in the YAML file and does some other minor
-cleanups.
+This script updates existing F<.travis.yml> files or creates a new one based
+on various settings from the command line. It is mostly focused on configuring
+Perl projects to work with the L<Perl Travis
+Helpers|https://github.com/travis-perl/helpers> tools. It also reorders the
+top-level keys in the YAML file and does some other minor cleanups.
 
 =head1 GETTING STARTED
 
-You'll need a non-empty F<.travis.yml> file in your repo to get started. This
-is enough to get the tool to generate a usable config.
+You can create a new file for a Perl build from scratch by running this script
+with the C<--create> argument:
 
-  ---
-  sudo: false
-  before_install:
-    - travis-perl
+    $> setup-travis-yml.pl --dir . --create
 
-Though if you are building a Perl repository you'll need to add a
-C<before_install> step so that the config updater will recognize this is a
-Perl distro and expand to the full config
-
-    ---
-    sudo: false
-    before_install:
-      - eval $(curl https://travis-perl.github.io/init) --auto
-
-Now you just need to invoke this script with a --dir for your repository:
-
-    setup-travis-yml.pl --dir ~/checkouts/MyRepoName
+If you want to update one or more existing files, don't pass C<--create>.
 
 If you want email or slack notification you'll need to pass a few more
 arguments:
@@ -54,9 +40,9 @@ arguments:
 
 =head1 THE CONFIG
 
-The updated config is based in part of the config that's already there, so the
-tools starts by reading in the existing config. It will use this as the guide
-for some decisions about what to update, as detailed below.
+If there is an existing file, most of its config will be preserved. The
+exisitng config is used as the guide for some decisions about what to update,
+as detailed below. A newly created file will also follow this guide.
 
 Here's a step-by-step guide to the generated Travis config and what it does:
 
@@ -161,7 +147,6 @@ something like this:
         - env: COVERAGE=1
           perl: '5.24'
 
-
 =head2 C<env.global>
 
 This script will ensure that C<env.global> sets both C<RELEASE_TESTING=1> and
@@ -183,10 +168,15 @@ encrypted key every time it's invoked, leading to annoying churn.
 
 This script accepts the following command line arguments:
 
+=head2 --create
+
+Create a new file instead of updating existing ones.
+
 =head2 --dir
 
 The directory under which to look for F<.travis.yml> files. This does a
-recursive search so you can update many projects at once.
+recursive search so you can update many projects at once. In create mode it
+will only create a file in the current directory.
 
 This is required.
 
