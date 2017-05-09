@@ -33,10 +33,10 @@ If you want to update one or more existing files, don't pass C<--create>.
 If you want email or slack notification you'll need to pass a few more
 arguments:
 
-    setup-travis-yml.pl \
-       --github-user example \
-       --slack-key o8PZMLqZK6uWVxyyTzZf4qdY \
-       --email-address example@example.org
+    $> setup-travis-yml.pl \
+           --github-user example \
+           --slack-key o8PZMLqZK6uWVxyyTzZf4qdY \
+           --email-address example@example.org
 
 =head1 THE CONFIG
 
@@ -203,7 +203,7 @@ the default Travis notifications will still be in place).
 You'll need to have the Travis CLI installed. On a linux box this would be
 something like
 
-    sudo apt-get install ruby1.9.1-dev
-    sudo gem install travis -v 1.8.2 --no-rdoc --no-ri
+    $> sudo apt-get install ruby1.9.1-dev
+    $> sudo gem install travis -v 1.8.2 --no-rdoc --no-ri
 
 =cut
