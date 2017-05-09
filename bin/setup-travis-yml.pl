@@ -11,7 +11,7 @@ __END__
 
 =pod
 
-=head1 NAME - update-travis-yml.pl
+=head1 NAME - setup-travis-yml.pl
 
 =head1 DESCRIPTION
 
@@ -42,12 +42,12 @@ Perl distro and expand to the full config
 
 Now you just need to invoke this script with a --dir for your repository:
 
-    update-travis-yml.pl --dir ~/checkouts/MyRepoName
+    setup-travis-yml.pl --dir ~/checkouts/MyRepoName
 
 If you want email or slack notification you'll need to pass a few more
 arguments:
 
-    update-travis-yml.pl \
+    setup-travis-yml.pl \
        --github-user example \
        --slack-key o8PZMLqZK6uWVxyyTzZf4qdY \
        --email-address example@example.org

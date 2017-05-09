@@ -11,7 +11,7 @@ __END__
 
 =pod
 
-=head1 NAME - update-appveyor-yml.pl
+=head1 NAME - setup-appveyor-yml.pl
 
 =head1 DESCRIPTION
 
