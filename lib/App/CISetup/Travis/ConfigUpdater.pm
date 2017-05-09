@@ -9,6 +9,7 @@ our $VERSION = '0.01';
 
 use App::CISetup::Travis::ConfigFile;
 use App::CISetup::Types qw( Bool Str );
+use Try::Tiny;
 
 use Moose;
 use MooseX::StrictConstructor;
@@ -47,12 +48,9 @@ with(
 sub run {
     my $self = shift;
 
-    if ( $self->create ) {
-        $self->_create_file;
-    }
-    else {
-        $self->_update_files;
-    }
+    return $self->create
+        ? $self->_create_file
+        : $self->_update_files;
 }
 
 sub _create_file {
@@ -61,6 +59,8 @@ sub _create_file {
     my $file = $self->dir->child('.travis.yml');
     App::CISetup::Travis::ConfigFile->new( $self->_cf_params($file) )
         ->create_file;
+
+    print "Created $file\n" or die $!;
 
     return 0;
 }
@@ -73,8 +73,18 @@ sub _update_files {
     my $count = 0;
     while ( my $file = $iter->() ) {
         $count++;
-        App::CISetup::Travis::ConfigFile->new( $self->_cf_params($file) )
-            ->update_file;
+        my $updated = try {
+            App::CISetup::Travis::ConfigFile->new( $self->_cf_params($file) )
+                ->update_file;
+        }
+        catch {
+            print "\n\n\n" . $file . "\n" or die $!;
+            print $_ or die $!;
+        };
+
+        next unless $updated;
+
+        print "Updated $file\n" or die $!;
     }
 
     warn "WARNING: No .travis.yml files found\n"
@@ -88,7 +98,6 @@ sub _cf_params {
     my $file = shift;
 
     return (
-        create               => $self->create,
         file                 => $file,
         force_threaded_perls => $self->force_threaded_perls,
         (

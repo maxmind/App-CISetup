@@ -7,22 +7,17 @@ use autodie qw( :all );
 
 our $VERSION = '0.01';
 
+use App::CISetup::Types qw( Bool File Str );
 use File::pushd;
 use IPC::Run3 qw( run3 );
 use List::AllUtils qw( first_index uniq );
 use List::Gather;
-use App::CISetup::Types qw( Bool File Str );
+use Path::Iterator::Rule;
 use Try::Tiny;
 use YAML qw( Dump );
 
 use Moose;
 use MooseX::StrictConstructor;
-
-has create => (
-    is       => 'ro',
-    isa      => Bool,
-    required => 1,
-);
 
 has email_address => (
     is        => 'ro',
@@ -54,15 +49,16 @@ with 'App::CISetup::Role::ConfigFile';
 sub _create_config {
     my $self = shift;
 
-    return $self->_update_config( { language => 'perl' } );
+    return $self->_update_config( { language => 'perl' }, 1 );
 }
 
 sub _update_config {
     my $self   = shift;
     my $travis = shift;
+    my $create = shift;
 
     $self->_update_cisetup_flags($travis);
-    $self->_maybe_update_travis_perl_usage($travis);
+    $self->_maybe_update_travis_perl_usage( $travis, $create );
     $self->_maybe_disable_sudo($travis);
     $self->_update_coverity_email($travis);
     $self->_update_notifications($travis);
@@ -99,9 +95,10 @@ sub _update_cisetup_flags {
 sub _maybe_update_travis_perl_usage {
     my $self   = shift;
     my $travis = shift;
+    my $create = shift;
 
     return
-        unless $self->create
+        unless $create
         || ( $travis->{before_install}
         && grep {/perl-travis-helper|travis-perl/}
         @{ $travis->{before_install} } );
@@ -290,10 +287,10 @@ sub _update_notifications {
         # the same input so we don't want to run it unless we have to, otherwise
         # we end up with pointless updates.
         unless ($slack) {
-            my $pushed = pushd( $self->file->dir );
+            my $pushed = pushd( $self->file->parent );
             my $stdout;
             my $stderr;
-            run3(
+            $self->_run3(
                 [
                     'travis', 'encrypt', '--no-interactive',
                     '-R',
@@ -313,6 +310,13 @@ sub _update_notifications {
         };
     }
 
+    return;
+}
+
+# This is broken out so we can replace it in test code.
+sub _run3 {
+    shift;
+    run3(@_);
     return;
 }
 

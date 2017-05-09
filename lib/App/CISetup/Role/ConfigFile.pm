@@ -33,8 +33,6 @@ sub create_file {
     my $file = $self->file;
     $file->spew($yaml);
 
-    print "Created $file\n" or die $!;
-
     return;
 }
 
@@ -49,25 +47,17 @@ sub update_file {
         LoadFile($file);
     }
     catch {
-        $err = "YAML parsing error: $_\n";
+        die "YAML parsing error: $_\n";
     };
 
-    return 0 unless $content || $err;
-
-    if ($err) {
-        print "\n\n\n" . $file . "\n" or die $!;
-        print $err or die $!;
-        return;
-    }
+    return 0 unless $content;
 
     my $yaml = $self->_update_config($content);
-    return if $yaml eq $orig;
+    return 0 if $yaml eq $orig;
 
     $file->spew($yaml);
 
-    print "Updated $file\n" or die $!;
-
-    return;
+    return 1;
 }
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
