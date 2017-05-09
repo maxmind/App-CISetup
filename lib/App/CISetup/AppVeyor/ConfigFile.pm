@@ -74,15 +74,24 @@ sub _update_notifications {
 
 my @BlocksOrder = qw(
     version
-    os
-    cache
-    before_build
-    install
-    build
-    build_script
-    test_script
-    notifications
     skip_tags
+    init
+    environment
+    matrix
+    cache
+    services
+    install
+    before_build
+    build_script
+    after_build
+    before_test
+    test_script
+    after_test
+    artifacts
+    on_success
+    on_failure
+    on_finish
+    notifications
 );
 
 ## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
