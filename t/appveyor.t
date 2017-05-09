@@ -43,6 +43,9 @@ EOF
         is(
             $appveyor,
             {
+                __app_cisetup__ => {
+                    email_address => 'drolsky@cpan.org',
+                },
                 cache   => ['C:\strawberry'],
                 install => [
                     'if not exist "C:\strawberry" cinst strawberryperl -y',
