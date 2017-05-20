@@ -1,18 +1,30 @@
 package App::CISetup::Role::ConfigFileFinder;
 
-use App::CISetup::Wrapper::OurMooseX::Role::Parameterized;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
+
+our $VERSION = '0.01';
 
 use File::pushd qw( pushd );
 use Git::Sub qw( remote );
 use App::CISetup::Travis::ConfigFile;
-use App::CISetup::Types qw( CodeRef PathClassDir Str );
-use Path::Class::Rule;
+use App::CISetup::Types qw( Bool CodeRef Dir Str );
+use Path::Iterator::Rule;
+use Path::Tiny qw( path );
 
-with 'MooseX::Getopt::Dashes';
+use MooseX::Role::Parameterized;
+
+has create => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
+);
 
 has dir => (
     is       => 'ro',
-    isa      => PathClassDir,
+    isa      => Dir,
     required => 1,
     coerce   => 1,
 );
@@ -23,6 +35,8 @@ has _config_file_iterator => (
     lazy    => 1,
     builder => '_build_config_file_iterator',
 );
+
+with 'MooseX::Getopt::Dashes';
 
 parameter filename => (
     is       => 'ro',
@@ -35,16 +49,24 @@ role {
     method( _filename => sub { $p->filename } );
 };
 
-sub _build_config_file_iterator ($self) {
-    my $rule = Path::Class::Rule->new;
+sub _build_config_file_iterator {
+    my $self = shift;
+
+    my $rule = Path::Iterator::Rule->new;
     $rule->file->name( $self->_filename );
+
     $rule->and(
-        sub ( $path, $, $ ) {
-            return unless -e $path->parent->subdir('.git');
+        sub {
+            my $path = path(shift);
+
+            return unless -e $path->parent->child('.git');
             my $pushed = pushd( $path->parent );
-            ## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
-            my @origin = git::remote(qw( show -n origin ));
-            return unless grep { m{Push +URL: .+(:|/)maxmind/} } @origin;
+
+## no critic (Modules::RequireExplicitInclusion, Subroutines::ProhibitCallsToUnexportedSubs)
+            # XXX - make this configurable?
+            # my @origin = git::remote(qw( show -n origin ));
+            #            return unless grep {m{Push +URL: .+(:|/)maxmind/}} @origin;
+
             return 1;
         }
     );

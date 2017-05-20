@@ -1,69 +1,70 @@
 package App::CISetup::Role::ConfigFile;
 
-use App::CISetup::Wrapper::OurMoose::Role;
+use strict;
+use warnings;
+use namespace::autoclean;
+use autodie qw( :all );
 
-use File::pushd;
-use IPC::Run3 qw( run3 );
-use List::AllUtils qw( first_index uniq );
-use App::CISetup::Types qw( Bool PathClassFile );
-use Path::Class::Rule;
+our $VERSION = '0.01';
+
+use App::CISetup::Types qw( Path );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
+use Moose::Role;
+
 requires qw(
+    _create_config
     _update_config
-    _fix_up_yaml
 );
 
 has file => (
     is       => 'ro',
-    isa      => PathClassFile,
+    isa      => Path,
+    coerce   => 1,
     required => 1,
 );
 
-sub update_file ($self) {
+sub create_file {
+    my $self = shift;
+
+    my $yaml = $self->_create_config;
+
     my $file = $self->file;
-    my $orig = $file->slurp;
-
-    my $err;
-    my $content = try {
-        LoadFile($file);
-    }
-    catch {
-        $err = "YAML parsing error: $_\n";
-    };
-
-    return unless $content || $err;
-
-    if ($err) {
-        print "\n\n\n", $file, "\n";
-        print $err;
-        return;
-    }
-
-    $self->_update_config($content);
-
-    ## no critic (TestingAndDebugging::ProhibitNoWarnings)
-    no warnings 'once';
-
-    # If Perl versions aren't quotes then Travis display 5.10 as "5.1"
-
-    ## no critic (Variables::ProhibitPackageVars)
-    local $YAML::QuoteNumericStrings = 1;
-    my $yaml = Dump($content);
-
-    $yaml = $self->_fix_up_yaml($yaml);
-
-    return if $yaml eq $orig;
-
-    say "Updated $file";
-
     $file->spew($yaml);
 
     return;
 }
 
-sub _reorder_yaml_blocks ( $self, $yaml, $blocks_order ) {
+sub update_file {
+    my $self = shift;
+
+    my $file = $self->file;
+    my $orig = $file->slurp;
+
+    my $content = try {
+        LoadFile($file);
+    }
+    catch {
+        die "YAML parsing error: $_\n";
+    };
+
+    return 0 unless $content;
+
+    my $yaml = $self->_update_config($content);
+    return 0 if $yaml eq $orig;
+
+    $file->spew($yaml);
+
+    return 1;
+}
+
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _reorder_yaml_blocks {
+    my $self         = shift;
+    my $yaml         = shift;
+    my $blocks_order = shift;
+
     my $re = qr/^
                 (
                     ([a-z_]+): # key:
@@ -87,13 +88,14 @@ sub _reorder_yaml_blocks ( $self, $yaml, $blocks_order ) {
         $blocks{$name} = $self->$method( $blocks{$name} );
     }
 
-    my %known_blocks = map { $_ => 1 } $blocks_order->@*;
+    my %known_blocks = map { $_ => 1 } @{$blocks_order};
     for my $block ( keys %blocks ) {
         die "Unknown block $block in " . $self->file
             unless $known_blocks{$block};
     }
 
-    return "---\n" . join q{}, map { $blocks{$_} // () } $blocks_order->@*;
+    return "---\n" . join q{}, map { $blocks{$_} // () } @{$blocks_order};
 }
+## use critic
 
 1;
