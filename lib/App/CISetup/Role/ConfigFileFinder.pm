@@ -5,7 +5,7 @@ use warnings;
 use namespace::autoclean;
 use autodie qw( :all );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use File::pushd qw( pushd );
 use Git::Sub qw( remote );

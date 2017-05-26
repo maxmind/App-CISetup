@@ -51,7 +51,7 @@ my %WriteMakefileArgs = (
     "Test2::Plugin::NoWarnings" => 0,
     "Test::More" => "1.302015"
   },
-  "VERSION" => "0.02",
+  "VERSION" => "0.03",
   "test" => {
     "TESTS" => "t/*.t"
   }
