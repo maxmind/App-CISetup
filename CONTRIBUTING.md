@@ -100,6 +100,11 @@ can submit an issue report [via the web](https://github.com/maxmind/App-CISetup/
 ).
 This is a good place to send your questions about the usage of this distribution.
 
+## Travis
+
+All pull requests for this distribution will be automatically tested by
+[Travis](https://travis-ci.org/) and the build status will be reported on the
+pull request page. If your build fails, please take a look at the output.
 
 ## Tidyall
 

@@ -6,6 +6,13 @@ App::CISetup - Command line tools to generate and update Travis and AppVeyor con
 
 version 0.01
 
+# DESCRIPTION
+
+This distro includes two command-line tools, [update-travis-yml.pl](https://metacpan.org/pod/update-travis-yml.pl) and
+[update-appveyor-yml.pl](https://metacpan.org/pod/update-appveyor-yml.pl). They update Travis and AppVeyor YAML config files
+with some opinionated defaults. See the docs for the respective scripts for
+more details.
+
 # SUPPORT
 
 Bugs may be submitted through [https://github.com/maxmind/App-CISetup/issues](https://github.com/maxmind/App-CISetup/issues).

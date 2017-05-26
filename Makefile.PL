@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-
+use 5.014000;
 
 use ExtUtils::MakeMaker;
 
@@ -14,21 +14,24 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "App-CISetup",
   "EXE_FILES" => [
-    "bin/update-appveyor-yml.pl",
-    "bin/update-travis-yml.pl"
+    "bin/setup-appveyor-yml.pl",
+    "bin/setup-travis-yml.pl"
   ],
   "LICENSE" => "artistic_2",
+  "MIN_PERL_VERSION" => "5.014000",
   "NAME" => "App::CISetup",
   "PREREQ_PM" => {
     "File::pushd" => 0,
     "Git::Sub" => 0,
     "IPC::Run3" => 0,
     "List::AllUtils" => 0,
+    "List::Gather" => 0,
     "Moose" => 0,
     "Moose::Role" => 0,
     "MooseX::Getopt::Dashes" => 0,
     "MooseX::Getopt::OptionTypeMap" => 0,
     "MooseX::Role::Parameterized" => 0,
+    "MooseX::StrictConstructor" => 0,
     "MooseX::Types::Combine" => 0,
     "MooseX::Types::Path::Tiny" => 0,
     "Path::Iterator::Rule" => 0,
@@ -44,7 +47,9 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0,
     "File::Spec" => 0,
-    "Test::More" => "0.96"
+    "Test2::Bundle::Extended" => 0,
+    "Test2::Plugin::NoWarnings" => 0,
+    "Test::More" => "1.302015"
   },
   "VERSION" => "0.01",
   "test" => {
@@ -60,16 +65,20 @@ my %FallbackPrereqs = (
   "Git::Sub" => 0,
   "IPC::Run3" => 0,
   "List::AllUtils" => 0,
+  "List::Gather" => 0,
   "Moose" => 0,
   "Moose::Role" => 0,
   "MooseX::Getopt::Dashes" => 0,
   "MooseX::Getopt::OptionTypeMap" => 0,
   "MooseX::Role::Parameterized" => 0,
+  "MooseX::StrictConstructor" => 0,
   "MooseX::Types::Combine" => 0,
   "MooseX::Types::Path::Tiny" => 0,
   "Path::Iterator::Rule" => 0,
   "Path::Tiny" => 0,
-  "Test::More" => "0.96",
+  "Test2::Bundle::Extended" => 0,
+  "Test2::Plugin::NoWarnings" => 0,
+  "Test::More" => "1.302015",
   "Try::Tiny" => 0,
   "YAML" => 0,
   "autodie" => 0,
