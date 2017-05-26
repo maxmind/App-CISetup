@@ -7,11 +7,13 @@ use App::CISetup::AppVeyor::ConfigUpdater;
 
 exit App::CISetup::AppVeyor::ConfigUpdater->new_with_options->run;
 
+# PODNAME: setup-appveyor-yml.pl
+
+# ABSTRACT: Tool for managing appveyor.yml files
+
 __END__
 
 =pod
-
-=head1 NAME - setup-appveyor-yml.pl
 
 =head1 DESCRIPTION
 

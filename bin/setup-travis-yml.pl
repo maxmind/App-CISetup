@@ -7,11 +7,13 @@ use App::CISetup::Travis::ConfigUpdater;
 
 exit App::CISetup::Travis::ConfigUpdater->new_with_options->run;
 
+# PODNAME: setup-travis-yml.pl
+
+# ABSTRACT: Tool for managing .travis.yml files
+
 __END__
 
 =pod
-
-=head1 NAME - setup-travis-yml.pl
 
 =head1 DESCRIPTION
 
