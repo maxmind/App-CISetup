@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+our $VERSION = '0.02';
+
 use App::CISetup::AppVeyor::ConfigUpdater;
 
 exit App::CISetup::AppVeyor::ConfigUpdater->new_with_options->run;
