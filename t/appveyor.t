@@ -9,6 +9,80 @@ use Path::Tiny qw( tempdir );
 use YAML qw( DumpFile Load LoadFile );
 
 subtest(
+    'create',
+    sub {
+        my $dir  = tempdir();
+        my $file = $dir->child('appveyor.yml');
+
+        App::CISetup::AppVeyor::ConfigFile->new(
+            file                => $file,
+            encrypted_slack_key => 'encrypted',
+            slack_channel       => 'my-channel',
+            email_address       => 'drolsky@cpan.org',
+        )->create_file;
+
+        my $appveyor = LoadFile($file);
+        is(
+            $appveyor,
+            {
+                cache   => ['C:\strawberry'],
+                install => [
+                    'if not exist "C:\strawberry" cinst strawberryperl -y',
+                    'set PATH=C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%',
+                    'cd %APPVEYOR_BUILD_FOLDER%',
+                    'cpanm --installdeps . -n',
+                ],
+                build_script  => ['perl -e 1'],
+                test_script   => ['prove -lrv t/'],
+                skip_tags     => 'true',
+                notifications => [
+                    {
+                        provider                => 'Slack',
+                        auth_token              => { secure => 'encrypted' },
+                        channel                 => 'my-channel',
+                        on_build_failure        => 'true',
+                        on_build_status_changed => 'true',
+                        on_build_success        => 'true',
+                    },
+                    {
+                        provider         => 'Email',
+                        subject          => 'AppVeyor build {{status}}',
+                        to               => ['drolsky@cpan.org'],
+                        on_build_failure => 'true',
+                        on_build_status_changed => 'true',
+                        on_build_success        => 'false',
+                    },
+                ],
+            },
+            'created file contains expected content',
+        );
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {email_address => "drolsky\@cpan.org",slack_channel => "my-channel"}
+### __app_cisetup__
+EOF
+        my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
+
+        is(
+            $last_lines,
+            $flags_block,
+            'config is stored as a comment at the end of the file'
+        );
+
+        App::CISetup::AppVeyor::ConfigFile->new(
+            file                => $file,
+            encrypted_slack_key => 'encrypted',
+            slack_channel       => 'my-channel',
+            email_address       => 'drolsky@cpan.org',
+        )->update_file;
+
+        my $updated = LoadFile($file);
+        is( $appveyor, $updated, 'file was not changed by second update' );
+    }
+);
+
+subtest(
     'update',
     sub {
         my $dir  = tempdir();
@@ -21,7 +95,7 @@ cache:
 install:
   - if not exist "C:\strawberry" cinst strawberryperl -y
   - set PATH=C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%
-  - cd C:\projects\%APPVEYOR_PROJECT_NAME%
+  - cd %APPVEYOR_BUILD_FOLDER%
   - cpanm --installdeps . -n
 
 build_script:
@@ -48,7 +122,7 @@ EOF
                 install => [
                     'if not exist "C:\strawberry" cinst strawberryperl -y',
                     'set PATH=C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%',
-                    'cd C:\projects\%APPVEYOR_PROJECT_NAME%',
+                    'cd %APPVEYOR_BUILD_FOLDER%',
                     'cpanm --installdeps . -n',
                 ],
                 build_script  => ['perl -e 1'],

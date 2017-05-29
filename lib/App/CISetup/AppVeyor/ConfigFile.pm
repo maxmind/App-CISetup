@@ -43,7 +43,7 @@ sub _create_config {
             install   => [
                 'if not exist "C:\strawberry" cinst strawberryperl -y',
                 'set PATH=C:\strawberry\perl\bin;C:\strawberry\perl\site\bin;C:\strawberry\c\bin;%PATH%',
-                'cd C:\projects\%APPVEYOR_PROJECT_NAME%',
+                'cd %APPVEYOR_BUILD_FOLDER%',
                 'cpanm --installdeps . -n',
             ],
             build_script => ['perl -e 1'],

@@ -3,6 +3,9 @@
 - Flags passed on the CLI are now stored in a comment rather than in a YAML
   key. Travis is fine with unknown keys but AppVeyor chokes on them.
 
+- The generated AppVeyor install steps could break if your repo name contained
+  a dot (.).
+
 
 0.02     2017-05-26
 
