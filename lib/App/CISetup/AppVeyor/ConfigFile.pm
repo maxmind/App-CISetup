@@ -9,7 +9,6 @@ our $VERSION = '0.03';
 
 use App::CISetup::Types qw( Str );
 use List::Gather;
-use YAML qw( Dump );
 
 use Moose;
 
@@ -57,29 +56,11 @@ sub _update_config {
     my $self     = shift;
     my $appveyor = shift;
 
-    $self->_update_cisetup_flags($appveyor);
     $self->_update_notifications($appveyor);
 
-    my $yaml = Dump($appveyor);
-    $yaml = $self->_fix_up_yaml($yaml);
-
-    return $yaml;
+    return $appveyor;
 }
 ## use critic
-
-sub _update_cisetup_flags {
-    my $self     = shift;
-    my $appveyor = shift;
-
-    $appveyor->{'__app_cisetup__'} = {
-        gather {
-            take email_address => $self->email_address
-                if $self->has_email_address;
-        }
-    };
-
-    return;
-}
 
 sub _update_notifications {
     my $self     = shift;
@@ -140,7 +121,22 @@ sub _fix_up_yaml {
     my $self = shift;
     my $yaml = shift;
 
-    return $self->_reorder_yaml_blocks( $yaml, \@BlocksOrder );
+    $yaml = $self->_reorder_yaml_blocks( $yaml, \@BlocksOrder );
+
+    return $yaml;
+}
+
+sub _cisetup_flags {
+    my $self = shift;
+
+    return {
+        gather {
+            take email_address => $self->email_address
+                if $self->has_email_address;
+            take slack_channel => $self->slack_channel
+                if $self->has_slack_channel;
+        }
+    };
 }
 ## use critic
 

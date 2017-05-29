@@ -44,9 +44,6 @@ EOF
         is(
             $appveyor,
             {
-                __app_cisetup__ => {
-                    email_address => 'drolsky@cpan.org',
-                },
                 cache   => ['C:\strawberry'],
                 install => [
                     'if not exist "C:\strawberry" cinst strawberryperl -y',
@@ -77,6 +74,19 @@ EOF
                 ],
             },
             'update added notifications',
+        );
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {email_address => "drolsky\@cpan.org",slack_channel => "my-channel"}
+### __app_cisetup__
+EOF
+        my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
+
+        is(
+            $last_lines,
+            $flags_block,
+            'config is stored as a comment at the end of the file'
         );
 
         App::CISetup::AppVeyor::ConfigFile->new(

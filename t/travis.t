@@ -40,7 +40,6 @@ subtest(
         like(
             $yaml,
             qr/
-              ^__app_cisetup__:.+\n
               ^sudo:.+\n
               ^addons:.+\n
               ^language:.+\n
@@ -56,9 +55,8 @@ subtest(
         is(
             $travis,
             {
-                __app_cisetup__ => { force_threaded_perls => 0 },
-                sudo            => 'false',
-                addons          => {
+                sudo   => 'false',
+                addons => {
                     apt => {
                         packages => [ 'aspell', 'aspell-en' ],
                     },
@@ -93,6 +91,13 @@ subtest(
             'travis config contains expected content'
         );
 
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {force_threaded_perls => 0}
+### __app_cisetup__
+EOF
+        _test_flags_block( $file, $flags_block );
+
         App::CISetup::Travis::ConfigFile->new(
             file                 => $file,
             force_threaded_perls => 0,
@@ -125,6 +130,13 @@ subtest(
                 );
             }
         }
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {force_threaded_perls => 1}
+### __app_cisetup__
+EOF
+        _test_flags_block( $file, $flags_block );
     }
 );
 
@@ -181,6 +193,13 @@ subtest(
             ['eval $(curl https://travis-perl.github.io/init) --auto'],
             'old travis-perl URL is replaced'
         );
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {force_threaded_perls => 0}
+### __app_cisetup__
+EOF
+        _test_flags_block( $file, $flags_block );
     }
 );
 
@@ -265,6 +284,13 @@ subtest(
             { notification_email => 'bar@example.com' },
             'email address for coverity_scan is updated',
         );
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {email_address => "bar\@example.com",force_threaded_perls => 0}
+### __app_cisetup__
+EOF
+        _test_flags_block( $file, $flags_block );
     }
 );
 
@@ -352,7 +378,27 @@ subtest(
             ],
             'travis CLI command is run to encrypt slack key'
         );
+
+        my $flags_block = <<'EOF';
+### __app_cisetup__
+# {force_threaded_perls => 0,github_user => "autarch"}
+### __app_cisetup__
+EOF
+        _test_flags_block( $file, $flags_block );
     }
 );
+
+sub _test_flags_block {
+    my $file   = shift;
+    my $expect = shift;
+
+    my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
+
+    is(
+        $last_lines,
+        $expect,
+        'expected config is stored as a comment at the end of the file'
+    );
+}
 
 done_testing();
