@@ -11,7 +11,11 @@ use App::CISetup::Travis::ConfigFile;
 use Path::Tiny qw( tempdir );
 use YAML qw( DumpFile Load LoadFile );
 
+with 'R::Tester';
+
 sub test_create_and_update {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -91,12 +95,10 @@ sub test_create_and_update {
         'travis config contains expected content'
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {force_threaded_perls => 0}
-### __app_cisetup__
-EOF
-    _test_flags_block( $file, $flags_block );
+    $self->_test_cisetup_flags_comment(
+        $file,
+        { force_threaded_perls => 0 }
+    );
 
     App::CISetup::Travis::ConfigFile->new(
         file                 => $file,
@@ -108,6 +110,8 @@ EOF
 }
 
 sub test_force_threaded_perls {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -128,15 +132,15 @@ sub test_force_threaded_perls {
         }
     }
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {force_threaded_perls => 1}
-### __app_cisetup__
-EOF
-    _test_flags_block( $file, $flags_block );
+    $self->_test_cisetup_flags_comment(
+        $file,
+        { force_threaded_perls => 1 }
+    );
 }
 
 sub test_distro_has_xs {
+    my $self = shift;
+
     my $dir = tempdir();
     $dir->child('Foo.xs')->touch;
     my $file = $dir->child('.travis.yml');
@@ -160,6 +164,8 @@ sub test_distro_has_xs {
 }
 
 sub test_update_helpers_usage {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -185,15 +191,15 @@ sub test_update_helpers_usage {
         'old travis-perl URL is replaced'
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {force_threaded_perls => 0}
-### __app_cisetup__
-EOF
-    _test_flags_block( $file, $flags_block );
+    $self->_test_cisetup_flags_comment(
+        $file,
+        { force_threaded_perls => 0 }
+    );
 }
 
 sub test_maybe_disable_sudo {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -241,6 +247,8 @@ sub test_maybe_disable_sudo {
 }
 
 sub test_coverity_email {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -269,15 +277,18 @@ sub test_coverity_email {
         'email address for coverity_scan is updated',
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {email_address => "bar\@example.com",force_threaded_perls => 0}
-### __app_cisetup__
-EOF
-    _test_flags_block( $file, $flags_block );
+    $self->_test_cisetup_flags_comment(
+        $file,
+        {
+            email_address        => 'bar@example.com',
+            force_threaded_perls => 0,
+        }
+    );
 }
 
 sub test_email_notifications {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -311,6 +322,8 @@ sub test_email_notifications {
 }
 
 sub test_slack_notifications {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('.travis.yml');
 
@@ -357,24 +370,11 @@ sub test_slack_notifications {
         'travis CLI command is run to encrypt slack key'
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {force_threaded_perls => 0,github_user => "autarch"}
-### __app_cisetup__
-EOF
-    _test_flags_block( $file, $flags_block );
-}
-
-sub _test_flags_block {
-    my $file   = shift;
-    my $expect = shift;
-
-    my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
-
-    is(
-        $last_lines,
-        $expect,
-        'expected config is stored as a comment at the end of the file'
+    $self->_test_cisetup_flags_comment(
+        $file, {
+            force_threaded_perls => 0,
+            github_user          => 'autarch',
+        }
     );
 }
 

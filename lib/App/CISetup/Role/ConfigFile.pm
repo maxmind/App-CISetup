@@ -8,7 +8,6 @@ use autodie qw( :all );
 our $VERSION = '0.03';
 
 use App::CISetup::Types qw( Path );
-use Data::Dumper qw( Dumper );
 use Try::Tiny;
 use YAML qw( Dump LoadFile );
 
@@ -79,16 +78,17 @@ sub _config_to_yaml {
 sub _cisetup_flags_as_comment {
     my $self = shift;
 
-    local $Data::Dumper::Terse     = 1;
-    local $Data::Dumper::Indent    = 0;
-    local $Data::Dumper::Useqq     = 1;
-    local $Data::Dumper::Quotekeys = 0;
-    local $Data::Dumper::Sortkeys  = 1;
-    local $Data::Dumper::Varname   = q{};
+    my $yaml = Dump( $self->_cisetup_flags );
+    $yaml =~ s/^/# /gm;
 
-    return sprintf( <<'EOF', Dumper( $self->_cisetup_flags ) );
+    # Yes, this is YAML embedded in YAML as a comment. Yes, this is dumb. Yes,
+    # this is necessary. Unfortunately, AppVeyor chokes on random keys in its
+    # config file, so we have no choice but to use a comment. We could use
+    # Data::Dumper but we're already using YAML, and I don't really love doing
+    # an "eval" when trying to read this data.
+    return sprintf( <<'EOF', $yaml );
 ### __app_cisetup__
-# %s
+%s
 ### __app_cisetup__
 EOF
 }

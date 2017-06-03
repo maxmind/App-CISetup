@@ -11,7 +11,11 @@ use App::CISetup::AppVeyor::ConfigFile;
 use Path::Tiny qw( tempdir );
 use YAML qw( DumpFile Load LoadFile );
 
+with 'R::Tester';
+
 sub test_create {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('appveyor.yml');
 
@@ -58,17 +62,12 @@ sub test_create {
         'created file contains expected content',
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {email_address => "drolsky\@cpan.org",slack_channel => "my-channel"}
-### __app_cisetup__
-EOF
-    my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
-
-    is(
-        $last_lines,
-        $flags_block,
-        'config is stored as a comment at the end of the file'
+    $self->_test_cisetup_flags_comment(
+        $file,
+        {
+            email_address => 'drolsky@cpan.org',
+            slack_channel => 'my-channel',
+        }
     );
 
     App::CISetup::AppVeyor::ConfigFile->new(
@@ -83,6 +82,8 @@ EOF
 }
 
 sub test_update {
+    my $self = shift;
+
     my $dir  = tempdir();
     my $file = $dir->child('appveyor.yml');
 
@@ -148,17 +149,12 @@ EOF
         'update added notifications',
     );
 
-    my $flags_block = <<'EOF';
-### __app_cisetup__
-# {email_address => "drolsky\@cpan.org",slack_channel => "my-channel"}
-### __app_cisetup__
-EOF
-    my $last_lines = join q{}, ( $file->lines )[ -3, -2, -1 ];
-
-    is(
-        $last_lines,
-        $flags_block,
-        'config is stored as a comment at the end of the file'
+    $self->_test_cisetup_flags_comment(
+        $file,
+        {
+            email_address => 'drolsky@cpan.org',
+            slack_channel => 'my-channel',
+        }
     );
 
     App::CISetup::AppVeyor::ConfigFile->new(
