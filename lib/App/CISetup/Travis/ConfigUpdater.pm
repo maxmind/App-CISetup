@@ -40,6 +40,11 @@ has slack_key => (
 
 with 'App::CISetup::Role::ConfigUpdater';
 
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _config_filename {'.travis.yml'}
+
+sub _config_file_class {'App::CISetup::Travis::ConfigFile'}
+
 sub _cli_params {
     my $self = shift;
 
@@ -58,6 +63,7 @@ sub _cli_params {
         ( $self->has_slack_key ? ( slack_key => $self->slack_key ) : () ),
     );
 }
+## use critic
 
 __PACKAGE__->meta->make_immutable;
 

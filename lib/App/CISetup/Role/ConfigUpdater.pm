@@ -14,6 +14,7 @@ use Git::Sub qw( remote );
 use Path::Iterator::Rule;
 use Path::Tiny qw( path );
 use Try::Tiny;
+use YAML qw( Load );
 
 use Moose::Role;
 
@@ -56,9 +57,8 @@ sub run {
 sub _create_file {
     my $self = shift;
 
-    my $file = $self->dir->child($self->_config_filename);
-    $self->_config_file_class->new( $self->_cf_params($file) )
-        ->create_file;
+    my $file = $self->dir->child( $self->_config_filename );
+    $self->_config_file_class->new( $self->_cf_params($file) )->create_file;
 
     print "Created $file\n" or die $!;
 
@@ -108,9 +108,14 @@ sub _stored_params_from_file {
     my $self = shift;
     my $file = shift;
 
-    my $content = $file->slurp_utf8;
+    return
+        unless my ($yaml)
+        = $file->slurp_utf8
+        =~ /### __app_cisetup__\n(.+)### __app_cisetup__/s;
 
-    if (my $dump){}
+    $yaml =~ s/^# //mg;
+
+    return %{ Load($yaml) || {} };
 }
 
 sub _build_config_file_iterator {

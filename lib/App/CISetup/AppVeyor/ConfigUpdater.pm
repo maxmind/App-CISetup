@@ -27,6 +27,11 @@ has encrypted_slack_key => (
 
 with 'App::CISetup::Role::ConfigUpdater';
 
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+sub _config_filename {'appveyor.yml'}
+
+sub _config_file_class {'App::CISetup::AppVeyor::ConfigFile'}
+
 sub _cli_params {
     my $self = shift;
 
@@ -43,6 +48,7 @@ sub _cli_params {
         ),
     );
 }
+## use critic
 
 __PACKAGE__->meta->make_immutable;
 
