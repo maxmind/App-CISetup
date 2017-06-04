@@ -8,6 +8,7 @@ use Test2::Bundle::Extended '!meta';
 use Test2::Plugin::NoWarnings;
 
 use App::CISetup::Travis::ConfigFile;
+use Cwd qw( abs_path );
 use Path::Tiny qw( tempdir );
 use YAML qw( DumpFile Load LoadFile );
 
@@ -346,6 +347,7 @@ sub test_slack_notifications {
         ${ $_[2] } = q{"encrypted"};
     };
 
+    local $ENV{PATH} = join ':', abs_path('t/bin'), ( $ENV{PATH} // () );
     my $slack_key = 'slack key';
     App::CISetup::Travis::ConfigFile->new(
         file                 => $file,
@@ -361,13 +363,19 @@ sub test_slack_notifications {
         },
         'slack notification is added when slack key and github user is provided',
     );
+    like(
+        shift @{ $run3[0] },
+        qr/travis$/,
+        'travis CLI command is run to encrypt slack key'
+    );
+
     is(
         $run3[0],
         [
-            qw( travis encrypt --no-interactive -R ),
+            qw( encrypt --no-interactive -R ),
             'autarch/' . $dir->basename, $slack_key
         ],
-        'travis CLI command is run to encrypt slack key'
+        'travis CLI command is run with expected args'
     );
 
     $self->_test_cisetup_flags_comment(
