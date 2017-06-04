@@ -9,6 +9,7 @@ our $VERSION = '0.03';
 
 use App::CISetup::Types qw( Bool File Str );
 use File::pushd;
+use File::Which qw( which );
 use IPC::Run3 qw( run3 );
 use List::AllUtils qw( first_index uniq );
 use List::Gather;
@@ -264,9 +265,12 @@ sub _update_notifications {
             my $pushed = pushd( $self->file->parent );
             my $stdout;
             my $stderr;
+
+            my $exe = which('travis')
+                or die 'Cannot find a travis command in the PATH';
             $self->_run3(
                 [
-                    'travis', 'encrypt', '--no-interactive',
+                    $exe, 'encrypt', '--no-interactive',
                     '-R',
                     $self->github_user . '/' . $self->file->parent->basename,
                     $self->slack_key
