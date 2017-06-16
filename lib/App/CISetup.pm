@@ -4,6 +4,9 @@ use v5.14;
 use strict;
 use warnings;
 
+# For use autodie qw( :all ) elsewhere
+use IPC::System::Simple ();
+
 our $VERSION = '0.04';
 
 1;

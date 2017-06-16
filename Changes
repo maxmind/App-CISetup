@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+- Make sure IPC::System::Simple is included in prereqs. Reported by Slaven
+  Rezić. RT #122115.
+
+
 0.03     2017-06-16
 
 - Flags passed on the CLI are now stored in a comment rather than in a YAML
