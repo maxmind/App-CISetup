@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.03     2017-06-16
+
 - Flags passed on the CLI are now stored in a comment rather than in a YAML
   key. Travis is fine with unknown keys but AppVeyor chokes on them.
 
