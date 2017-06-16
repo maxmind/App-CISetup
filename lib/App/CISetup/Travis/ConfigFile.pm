@@ -5,7 +5,7 @@ use warnings;
 use namespace::autoclean;
 use autodie qw( :all );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use App::CISetup::Types qw( Bool File Str );
 use File::pushd;
