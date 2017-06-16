@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.04     2017-06-16
+
 - Make sure IPC::System::Simple is included in prereqs. Reported by Slaven
   Rezić. RT #122115.
 

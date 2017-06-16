@@ -2,6 +2,7 @@ requires "File::Which" => "0";
 requires "File::pushd" => "0";
 requires "Git::Sub" => "0";
 requires "IPC::Run3" => "0";
+requires "IPC::System::Simple" => "0";
 requires "List::AllUtils" => "0";
 requires "List::Gather" => "0";
 requires "Moose" => "0";
