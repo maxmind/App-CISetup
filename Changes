@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.05     2017-06-22
+
 - Removed the use List::Gather. This seems to be the most likely culprit for
   some very odd test failures seen with threaded versions of Perl. See
   https://rt.cpan.org/Ticket/Display.html?id=121777 for details.
