@@ -8,8 +8,8 @@ version 0.05
 
 # DESCRIPTION
 
-This distro includes two command-line tools, [update-travis-yml.pl](https://metacpan.org/pod/update-travis-yml.pl) and
-[update-appveyor-yml.pl](https://metacpan.org/pod/update-appveyor-yml.pl). They update Travis and AppVeyor YAML config files
+This distro includes two command-line tools, [setup-travis-yml.pl](https://metacpan.org/pod/setup-travis-yml.pl) and
+[setup-appveyor-yml.pl](https://metacpan.org/pod/setup-appveyor-yml.pl). They update Travis and AppVeyor YAML config files
 with some opinionated defaults. See the docs for the respective scripts for
 more details.
 
