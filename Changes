@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+- Fixed a bug in the update mode which would cause it to die.
+
+
 0.05     2017-06-22
 
 - Removed the use List::Gather. This seems to be the most likely culprit for
