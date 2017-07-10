@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.06     2017-07-10
+
 - Fixed a bug in the update mode which would cause it to die.
 
 - Added 5.26.0 to the list of Perl versions that the Travis code knows about.
