@@ -136,6 +136,7 @@ sub _rewrite_perl_block {
     my @perls = qw(
         blead
         dev
+        5.26.0
         5.24.1
         5.22.3
         5.20.3
@@ -180,7 +181,7 @@ sub _update_perl_matrix {
     $travis->{matrix} = {
         include => [
             {
-                perl => '5.24',
+                perl => '5.26',
                 env  => 'COVERAGE=1',
             }
         ],
