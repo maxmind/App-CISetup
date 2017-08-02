@@ -110,6 +110,8 @@ sub _stored_params_from_file {
     my $self = shift;
     my $file = shift;
 
+    return unless $file->exists;
+
     return
         unless my ($yaml)
         = $file->slurp_utf8
