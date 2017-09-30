@@ -178,14 +178,23 @@ sub _update_perl_matrix {
     push @bleads, 'blead-thr'
         if grep { $_ eq 'blead-thr' } @{ $travis->{perl} };
 
+    my @include = @{ $travis->{matrix}{include} // [] };
+    push @include, {
+        perl => '5.26',
+        env  => 'COVERAGE=1',
+        }
+        unless grep { $_->{perl} eq '5.26' && $_->{env} eq 'COVERAGE=1' }
+        @include;
+
+    my @allow_failures = @{ $travis->{matrix}{allow_failures} // [] };
+    for my $blead (@bleads) {
+        push @allow_failures, { perl => $blead }
+            unless grep { $_->{perl} eq $blead } @allow_failures;
+    }
+
     $travis->{matrix} = {
-        include => [
-            {
-                perl => '5.26',
-                env  => 'COVERAGE=1',
-            }
-        ],
-        allow_failures => [ map { { perl => $_ } } @bleads ],
+        include        => \@include,
+        allow_failures => \@allow_failures,
     };
 
     return;
