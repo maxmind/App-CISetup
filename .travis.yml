@@ -5,9 +5,6 @@ addons:
     packages:
       - aspell
       - aspell-en
-cache:
-  directories:
-    - $HOME/perl5
 language: perl
 perl:
   - blead
@@ -19,6 +16,9 @@ perl:
   - '5.18'
   - '5.16'
   - '5.14'
+cache:
+  directories:
+    - $HOME/perl5
 matrix:
   allow_failures:
     - perl: blead
@@ -36,5 +36,6 @@ before_install:
 ### __app_cisetup__
 # ---
 # force_threaded_perls: 0
+# perl_caching: 1
 
 ### __app_cisetup__

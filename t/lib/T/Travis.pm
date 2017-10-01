@@ -163,7 +163,7 @@ sub test_no_perl_caching {
         perl_caching         => 0,
     )->create_file;
 
-    my $yaml = $file->slurp;
+    my $yaml   = $file->slurp;
     my $travis = Load($yaml);
 
     is(
@@ -238,7 +238,9 @@ sub test_update_helpers_usage {
     my $travis = LoadFile($file);
     is(
         $travis->{before_install},
-        ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+        [
+            'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+        ],
         'old travis-perl URL is replaced'
     );
 
@@ -259,10 +261,11 @@ sub test_maybe_disable_sudo {
 
     DumpFile(
         $file, {
-            sudo     => 'true',
-            language => 'perl',
-            before_install =>
-                ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+            sudo           => 'true',
+            language       => 'perl',
+            before_install => [
+                'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+            ],
             perl => ['5.26'],
         }
     );
@@ -279,10 +282,11 @@ sub test_maybe_disable_sudo {
     );
     DumpFile(
         $file, {
-            sudo     => 'true',
-            language => 'perl',
-            before_install =>
-                ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+            sudo           => 'true',
+            language       => 'perl',
+            before_install => [
+                'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+            ],
             install => ['sudo foo'],
             perl    => ['5.26'],
         }
@@ -313,8 +317,9 @@ sub test_coverity_email {
             addons   => {
                 coverity_scan => { notification_email => 'foo@example.com' }
             },
-            before_install =>
-                ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+            before_install => [
+                'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+            ],
             perl => ['5.26'],
         }
     );
@@ -349,10 +354,11 @@ sub test_email_notifications {
 
     DumpFile(
         $file, {
-            sudo     => 'true',
-            language => 'perl',
-            before_install =>
-                ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+            sudo           => 'true',
+            language       => 'perl',
+            before_install => [
+                'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+            ],
             perl => ['5.26'],
         }
     );
@@ -384,10 +390,11 @@ sub test_slack_notifications {
 
     DumpFile(
         $file, {
-            sudo     => 'true',
-            language => 'perl',
-            before_install =>
-                ['eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'],
+            sudo           => 'true',
+            language       => 'perl',
+            before_install => [
+                'eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules'
+            ],
             perl => ['5.26'],
         }
     );
