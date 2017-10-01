@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Test::Class::Moose bare => 1;
-use Test2::Bundle::Extended '!meta';
+use Test2::V0 '!meta';
 use Test2::Plugin::NoWarnings 0.06;
 
 use App::CISetup::Travis::ConfigFile;
