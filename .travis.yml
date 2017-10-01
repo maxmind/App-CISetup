@@ -1,12 +1,13 @@
 ---
-__app_cisetup__:
-  force_threaded_perls: '0'
 sudo: false
 addons:
   apt:
     packages:
       - aspell
       - aspell-en
+cache:
+  directories:
+    - $HOME/perl5
 language: perl
 perl:
   - blead
@@ -31,7 +32,7 @@ env:
     - AUTHOR_TESTING=1
     - RELEASE_TESTING=1
 before_install:
-  - eval $(curl https://travis-perl.github.io/init) --auto
+  - eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules
 ### __app_cisetup__
 # ---
 # force_threaded_perls: 0
