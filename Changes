@@ -1,5 +1,10 @@
 {{$NEXT}}
 
+- Caching is now enabled for Travis Perl projects by default, taking advantage
+  of the travis-perl helper's support for this. This can be disable passing
+  the --no-perl-caching flag to the setup-travis-yml.pl script.
+
+
 0.08     2017-09-30
 
 - Running this on an existing .travis.yml would wipe out existing
