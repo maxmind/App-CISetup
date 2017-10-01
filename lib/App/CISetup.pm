@@ -7,7 +7,7 @@ use warnings;
 # For use autodie qw( :all ) elsewhere
 use IPC::System::Simple ();
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 1;
 
