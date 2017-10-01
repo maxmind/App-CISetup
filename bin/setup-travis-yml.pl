@@ -190,6 +190,15 @@ This is required.
 Force the inclusion of both threaded and unthreaded Perls in the generated
 config, regardless of whether the distro has XS or not.
 
+=head2 --perl-caching
+
+If this is true, then a C<cache> block will added to cache the C<$HOME/perl5>
+directory. In addition, the travis-perl C<init> call will be updated to add
+C<--always-uprade-modules>.
+
+Caching is enabled for Perl projects by default, but you can disable this by
+passing C<--no-perl-caching>.
+
 =head2 --slack-key
 
 A Slack key to use for Slack notifications. If you pass this you must also

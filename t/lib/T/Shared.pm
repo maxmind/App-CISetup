@@ -24,6 +24,7 @@ sub test_stored_params {
         github_user          => 'autarch',
         email_address        => 'drolsky@cpan.org',
         force_threaded_perls => 0,
+        perl_caching         => 1,
     );
 
     ## no critic (Variables::ProtectPrivateVars, Subroutines::ProtectPrivateSubs)
@@ -46,6 +47,7 @@ sub test_stored_params {
     my $updater = App::CISetup::Travis::ConfigUpdater->new(
         dir                  => $dir,
         force_threaded_perls => 1,
+        perl_caching         => 1,
         email_address        => 'autarch@urth.org',
         github_user          => 'bob',
     );
@@ -54,6 +56,7 @@ sub test_stored_params {
         {
             file                 => $file,
             force_threaded_perls => 1,
+            perl_caching         => 1,
             email_address        => 'autarch@urth.org',
             github_user          => 'bob',
         },

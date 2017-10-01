@@ -31,6 +31,12 @@ has force_threaded_perls => (
     required => 1,
 );
 
+has perl_caching => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 1,
+);
+
 has github_user => (
     is        => 'ro',
     isa       => Str,
@@ -77,10 +83,23 @@ sub _maybe_update_travis_perl_usage {
         && grep {/perl-travis-helper|travis-perl/}
         @{ $travis->{before_install} } );
 
+    $self->_maybe_add_cache_block($travis);
     $self->_fixup_helpers_usage($travis);
     $self->_rewrite_perl_block($travis);
     $self->_update_perl_matrix($travis);
     $self->_update_env_vars($travis);
+
+    return;
+}
+
+sub _maybe_add_cache_block {
+    my $self   = shift;
+    my $travis = shift;
+
+    return unless $self->perl_caching;
+    return if exists $travis->{cache};
+
+    $travis->{cache} = { directories => ['$HOME/perl5'] };
 
     return;
 }
@@ -116,8 +135,10 @@ sub _fixup_helpers_usage {
         @{ $travis->{before_install} };
         $i = 0 if $i < 0;
 
-        $travis->{before_install}[$i]
-            = 'eval $(curl https://travis-perl.github.io/init) --auto';
+        my $auto = 'eval $(curl https://travis-perl.github.io/init) --auto';
+        $auto .= ' --always-upgrade-modules' if $self->perl_caching;
+
+        $travis->{before_install}[$i] = $auto;
         splice( @{ $travis->{before_install} }, $i + 1, 0 )
             if @{ $travis->{before_install} } > 1;
     }
@@ -318,6 +339,7 @@ my @BlocksOrder = qw(
     perl
     php
     python
+    cache
     solution
     matrix
     env
@@ -376,7 +398,8 @@ sub _cisetup_flags {
     my $self = shift;
 
     my %flags = (
-        force_threaded_perls => $self->force_threaded_perls,
+        force_threaded_perls => $self->force_threaded_perls ? 1 : 0,
+        perl_caching         => $self->perl_caching         ? 1 : 0,
     );
 
     $flags{email_address} = $self->email_address

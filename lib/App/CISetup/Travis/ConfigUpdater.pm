@@ -26,6 +26,12 @@ has force_threaded_perls => (
     default => 0,
 );
 
+has perl_caching => (
+    is      => 'ro',
+    isa     => Bool,
+    default => 1,
+);
+
 has github_user => (
     is        => 'ro',
     isa       => Str,
@@ -50,6 +56,7 @@ sub _cli_params {
 
     return (
         force_threaded_perls => $self->force_threaded_perls,
+        perl_caching         => $self->perl_caching,
         (
             $self->has_email_address
             ? ( email_address => $self->email_address )
