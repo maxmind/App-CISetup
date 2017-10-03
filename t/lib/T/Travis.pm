@@ -132,7 +132,7 @@ sub test_force_threaded_perls {
 
     my $yaml = $file->slurp;
 
-    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.3 5.24.1 5.26.0 )) {
+    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.4 5.24.2 5.26.1 )) {
         for my $t ( $v, "$v-thr" ) {
             like(
                 $yaml,
@@ -203,7 +203,7 @@ sub test_distro_has_xs {
 
     my $yaml = $file->slurp;
 
-    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.3 5.24.1 5.26.0 )) {
+    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.4 5.24.2 5.26.1 )) {
         for my $t ( $v, "$v-thr" ) {
             like(
                 $yaml,
