@@ -26,9 +26,9 @@ has email_address => (
 );
 
 has force_threaded_perls => (
-    is       => 'ro',
-    isa      => Bool,
-    required => 1,
+    is      => 'ro',
+    isa     => Bool,
+    default => 0,
 );
 
 has perl_caching => (
