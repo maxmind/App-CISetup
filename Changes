@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.10     2017-10-03
+
 - Updated our list of Perl versions to include 5.26.1, 5.24.2, and 5.22.4.
 
 - The save value of force-threaded-perls and perl-caching flags in the
