@@ -70,8 +70,8 @@ C<perl-travis-helper> (the old name), then these blocks will be left as-is.
 If the travis-perl helpers I<are> referenced, the following updates are done:
 
 If the C<script> block is more than 3 lines long I<and> either the C<install>
-block is longer than 2 line I<or> the C<install> block does not contain a call
-to the travis-perl C<cpan-install>, then the C<before_install> block is
+block is longer than 2 lines I<or> the C<install> block does not contain a
+call to the travis-perl C<cpan-install>, then the C<before_install> block is
 updated to include these lines:
 
     - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
@@ -88,7 +88,7 @@ If the C<script> and C<install> blocks don't match the aforementioned
 conditions, then the C<instal> and C<script> blocks are deleted entirely and
 the C<before_install> block is updated to contain this line:
 
-    - eval $(curl https://travis-perl.github.io/init) --auto
+    - eval $(curl https://travis-perl.github.io/init) --auto --always-upgrade-modules
 
 If there is an existing travis-perl C<eval> line, this will be replaced with
 the line above. Otherwise this line will be inserted at the beginning of the
@@ -104,6 +104,7 @@ Perls, then you get a block like this:
     perl:
       - blead
       - dev
+      - '5.26'
       - '5.24'
       - '5.22'
       - '5.20'
@@ -121,6 +122,8 @@ forms. This will look something like this:
       - blead-thr
       - dev
       - dev-thr
+      - 5.26.0
+      - 5.26.0-thr
       - 5.24.1
       - 5.24.1-thr
       - 5.22.3
@@ -144,7 +147,7 @@ something like this:
         - perl: blead
       include:
         - env: COVERAGE=1
-          perl: '5.24'
+          perl: '5.26'
 
 =head2 C<env.global>
 
