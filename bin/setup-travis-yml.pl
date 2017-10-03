@@ -54,7 +54,7 @@ Here's a step-by-step guide to the generated Travis config and what it does:
 
 By default, C<sudo> will be disabled for the Travis run. This makes Travis
 faster. However, if an existing C<before_install> or C<install> block invokes
-C<sudo>`, then sudo will be enabled.
+C<sudo>, then sudo will be enabled.
 
 When C<sudo> is disabled, the C<addons> block will be updated to include
 C<aspell> and C<aspell-en> for the benefit of L<Test::Spelling>.
