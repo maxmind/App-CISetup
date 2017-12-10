@@ -343,6 +343,7 @@ my @BlocksOrder = qw(
     solution
     matrix
     env
+    branches
     services
     before_install
     install
