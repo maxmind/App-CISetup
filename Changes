@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.12     2017-12-23
+
 - The default under AppVeyor is now to run prove with the -m flag. This makes
   it much easier to diagnose test failures.
 
