@@ -46,7 +46,7 @@ sub _create_config {
                 'cpanm --installdeps . -n',
             ],
             build_script => ['perl -e 1'],
-            test_script  => ['prove -lrv t/'],
+            test_script  => ['prove -lrvm t/'],
         }
     );
 }
