@@ -9,10 +9,20 @@ use Test2::Plugin::NoWarnings;
 
 use App::CISetup::Travis::ConfigFile;
 use Cwd qw( abs_path );
+use File::Which qw( which );
 use Path::Tiny qw( tempdir );
 use YAML qw( DumpFile Load LoadFile );
 
 with 'R::Tester';
+
+sub test_setup {
+    my $self = shift;
+
+    my $method = $self->test_report->current_method->name;
+    return unless $method eq 'test_slack_notifications' && !which('travis');
+
+    $self->test_skip('Cannot test Slack support without Travis CLI tool');
+}
 
 sub test_create_and_update {
     my $self = shift;
