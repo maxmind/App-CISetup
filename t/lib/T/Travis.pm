@@ -142,11 +142,11 @@ sub test_force_threaded_perls {
 
     my $yaml = $file->slurp;
 
-    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.4 5.24.2 5.26.1 )) {
+    for my $v (qw( 5.14 5.16 5.18 5.20 5.22 5.24 5.26 )) {
         for my $t ( $v, "$v-thr" ) {
             like(
                 $yaml,
-                qr/^ +- \Q$t\E$/ms,
+                qr/^ +- '?\Q$t\E'?$/ms,
                 "created file includes Perl $t"
             );
         }
@@ -213,11 +213,11 @@ sub test_distro_has_xs {
 
     my $yaml = $file->slurp;
 
-    for my $v (qw( 5.14.4 5.16.3 5.18.3 5.20.3 5.22.4 5.24.2 5.26.1 )) {
+    for my $v (qw( 5.14 5.16 5.18 5.20 5.22 5.24 5.26 )) {
         for my $t ( $v, "$v-thr" ) {
             like(
                 $yaml,
-                qr/^ +- \Q$t\E$/ms,
+                qr/^ +- '?\Q$t\E'?$/ms,
                 "created file includes Perl $t"
             );
         }
