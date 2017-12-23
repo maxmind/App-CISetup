@@ -329,7 +329,6 @@ sub _run3 {
 }
 
 my @BlocksOrder = qw(
-    __app_cisetup__
     sudo
     addons
     language

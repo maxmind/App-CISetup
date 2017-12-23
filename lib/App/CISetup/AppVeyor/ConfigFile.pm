@@ -93,7 +93,6 @@ sub _update_notifications {
 }
 
 my @BlocksOrder = qw(
-    __app_cisetup__
     version
     skip_tags
     init
