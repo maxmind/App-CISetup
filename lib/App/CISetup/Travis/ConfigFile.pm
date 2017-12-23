@@ -115,7 +115,7 @@ sub _fixup_helpers_usage {
             && ( grep { !/cpan-install/ } @{ $travis->{install} }
                 || @{ $travis->{install} } > 2 )
         )
-        ) {
+    ) {
 
         my $i = (
             first_index {/travis-perl|haarg/}
