@@ -115,7 +115,7 @@ sub _stored_params_from_file {
     return
         unless my ($yaml)
         = $file->slurp_utf8
-        =~ /### __app_cisetup__\n(.+)### __app_cisetup__/s;
+        =~ /### __app_cisetup__\r?\n(.+)### __app_cisetup__/s;
 
     $yaml =~ s/^# //mg;
 
