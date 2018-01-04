@@ -327,6 +327,7 @@ sub _run3 {
 
 my @BlocksOrder = qw(
     sudo
+    dist
     addons
     language
     compiler
