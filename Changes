@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+- Added 5.28 to our list of Perl versions.
+
+
 0.13     2017-12-23
 
 - Simplify Perl version config to always use X.YY form in Travis config
