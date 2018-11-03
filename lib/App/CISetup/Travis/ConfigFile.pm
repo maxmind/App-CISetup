@@ -214,6 +214,7 @@ sub _update_perl_matrix {
     }
 
     $travis->{matrix} = {
+        fast_finish    => 1,
         include        => \@include,
         allow_failures => \@allow_failures,
     };
@@ -342,6 +343,7 @@ my @BlocksOrder = qw(
     cache
     solution
     matrix
+    fast_finish
     env
     branches
     services

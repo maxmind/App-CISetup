@@ -23,6 +23,7 @@ cache:
 matrix:
   allow_failures:
     - perl: blead
+  fast_finish: 1
   include:
     - env: COVERAGE=1
       perl: '5.28'
