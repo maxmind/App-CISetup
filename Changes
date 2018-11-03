@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.15     2018-11-03
+
 - The matrix.fast_finish key is now set to true for all Travis configs. See
   https://blog.travis-ci.com/2013-11-27-fast-finishing-builds/ for an
   explanation of what this does.
