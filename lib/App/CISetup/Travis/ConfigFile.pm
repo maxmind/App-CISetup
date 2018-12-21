@@ -64,7 +64,8 @@ sub _update_config {
     my $create = shift;
 
     $self->_maybe_update_travis_perl_usage( $travis, $create );
-    $self->_maybe_disable_sudo($travis);
+    $self->_maybe_remove_sudo($travis);
+    $self->_update_packages($travis);
     $self->_update_coverity_email($travis);
     $self->_update_notifications($travis);
 
@@ -240,16 +241,18 @@ sub _update_env_vars {
     return;
 }
 
-sub _maybe_disable_sudo {
+sub _maybe_remove_sudo {
     my $self   = shift;
     my $travis = shift;
 
-    return
-        if grep {/sudo/}
-        map { ref $travis->{$_} ? @{ $travis->{$_} } : $travis->{$_} }
-        grep { exists $travis->{$_} } qw( before_install install );
+    delete $travis->{sudo};
 
-    $travis->{sudo} = 0;
+    return;
+}
+
+sub _update_packages {
+    my $self   = shift;
+    my $travis = shift;
 
     my @addons
         = $travis->{addons}
