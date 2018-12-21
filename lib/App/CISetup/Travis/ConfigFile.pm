@@ -199,7 +199,7 @@ sub _update_perl_matrix {
     push @bleads, 'blead-thr'
         if grep { $_ eq 'blead-thr' } @{ $travis->{perl} };
 
-    my $latest = first {/^5/} @Perls;
+    my $latest  = first {/^5/} @Perls;
     my @include = @{ $travis->{matrix}{include} // [] };
     push @include, {
         perl => $latest,
