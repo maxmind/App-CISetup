@@ -50,17 +50,10 @@ as detailed below. A newly created file will also follow this guide.
 
 Here's a step-by-step guide to the generated Travis config and what it does:
 
-=head2 C<sudo> and C<addons>
+=head2 C<addons>
 
-By default, C<sudo> will be disabled for the Travis run. This makes Travis
-faster. However, if an existing C<before_install> or C<install> block invokes
-C<sudo>, then sudo will be enabled.
-
-When C<sudo> is disabled, the C<addons> block will be updated to include
-C<aspell> and C<aspell-en> for the benefit of L<Test::Spelling>.
-
-If C<sudo> is enabled, then you'll need to make sure your config installs any
-Debian packages which are needed.
+An C<addons> block will be added or updated to include C<aspell> and
+C<aspell-en> for the benefit of L<Test::Spelling>.
 
 =head2 C<before_install>, C<install>, and C<script>
 
