@@ -211,7 +211,8 @@ sub _update_perl_matrix {
     my @allow_failures = @{ $travis->{matrix}{allow_failures} // [] };
     for my $blead (@bleads) {
         push @allow_failures, { perl => $blead }
-            unless grep { $_->{perl} eq $blead } @allow_failures;
+            unless grep { exists $_->{perl} && $_->{perl} eq $blead }
+            @allow_failures;
     }
 
     $travis->{matrix} = {
