@@ -75,8 +75,9 @@ sub _update_files {
         $file = path($file);
 
         $count++;
-        my $updated = try {
-            $self->_config_file_class->new( $self->_cf_params($file) )
+        my $updated;
+        try {
+            $updated = $self->_config_file_class->new( $self->_cf_params($file) )
                 ->update_file;
         }
         catch {
