@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.17     2019-01-10
+
 - Both tools could incorrectly report that they updated the .travis.yml when
   in fact they errored out trying to parse the YAML file. Fixed by Olaf
   Alders. GH #7.
