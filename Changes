@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.18     2019-01-24
+
 - Make fewer assumptions about the existing config when updating, notably the
   matrix.allow_failures section. Fixed by Olaf Alders. GH #8.
 
