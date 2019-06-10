@@ -150,6 +150,7 @@ sub _fixup_helpers_usage {
 my @Perls = qw(
     blead
     dev
+    5.30
     5.28
     5.26
     5.24
