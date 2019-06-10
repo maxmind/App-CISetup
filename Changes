@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+- Added 5.30 to our list of Perl versions.
+
+
 0.18     2019-01-24
 
 - Make fewer assumptions about the existing config when updating, notably the
